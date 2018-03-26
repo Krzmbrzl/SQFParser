@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import abego.swt.INode;
-import dataStructures.CharacterInputStream1;
+import dataStructures.CharacterInputStream;
 import dataStructures.IBuildableIndexTree;
 import dataStructures.IErrorListener;
 import dataStructures.IndexTree;
@@ -52,38 +52,38 @@ class ParserTest {
 
 	@Test
 	public void arithmeticTest() throws IOException {
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("2+4".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("2+4".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, ":1(0 2)");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("2+4*7".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("2+4*7".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, ":1(0 3(2 4))");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("2+4*7^9".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("2+4*7^9".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, ":1(0 3(2 5(4 6)))");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("2+4*7^9/4".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("2+4*7^9/4".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, ":1(0 7(3(2 5(4 6))8))");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("2+4*7^9/4-2".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("2+4*7^9/4-2".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, ":9(1(0 7(3(2 5(4 6))8)) 10)");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("4^3*2-4/7".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("4^3*2-4/7".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, ":5(3(1(0 2)4)7(6 8))");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("2+-3".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("2+-3".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, ":1(0 2(3))");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
@@ -93,22 +93,22 @@ class ParserTest {
 
 	@Test
 	public void parenthesisTest() throws IOException {
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("(2+4)*7".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("(2+4)*7".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, ":5(2(1 3)6)");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("7*(2+4)".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("7*(2+4)".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, ":1(0 4(3 5))");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("7*(2+4)^3".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("7*(2+4)^3".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, ":1(0 7(4(3 5) 8))");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("7*(2+4/(3-14))".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("7*(2+4/(3-14))".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, ":1(0 4(3 6(5 9(8 10))))");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
@@ -118,42 +118,42 @@ class ParserTest {
 
 	@Test
 	public void arrayTest() throws IOException {
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("[2]".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("[2]".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, "b(0 1 2)");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("[2+3]".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("[2+3]".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, "b(0 2(1 3) 4)");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("2+[2+3]".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("2+[2+3]".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, ":1(0 n(2 4(3 5) 6))");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("[2-3*5]+[2+3]".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("[2-3*5]+[2+3]".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, ":7(n(0 2(1 4(3 5)) 6) n(8 10(9 11) 12))");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("[2+[]]".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("[2+[]]".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, "b(0 2(1 n(3 4)) 5)");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("[1,2,3]".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("[1,2,3]".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, "b(0 1 2 3 4 5 6)");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("[2+1,2-1*2]".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("[2+1,2-1*2]".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, "b(0 2(1 3) 4 6(5 8(7 9))10)");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("[[2,7*4],2-1*2]".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("[[2,7*4],2-1*2]".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, "b(0 n(1 2 3 5(4 6) 7) 8 10(9 12(11 13)) 14)");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
@@ -163,22 +163,22 @@ class ParserTest {
 
 	@Test
 	public void multipleStatements() throws IOException {
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("2;3".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("2;3".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, ":0 :1 :2");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream(";;".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream(";;".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, ":0 :1");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("2+5;3".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("2+5;3".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, ":1(0 2) :3 :4");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("2+5;3;".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("2+5;3;".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, ":1(0 2) :3 :4 :5");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
@@ -186,37 +186,37 @@ class ParserTest {
 
 	@Test
 	public void inlineCodeTest() throws IOException {
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("{}".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("{}".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, "b(0 1)");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("{3}".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("{3}".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, "b(0 1 2)");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("{2+3}".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("{2+3}".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, "b(0 2(1 3) 4)");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("{2+3;}".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("{2+3;}".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, "b(0 2(1 3) 4 5)");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("{2+3;4-5}".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("{2+3;4-5}".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, "b(0 2(1 3) 4 6(5 7) 8)");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("{2+3;4-5;}".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("{2+3;4-5;}".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, "b(0 2(1 3) 4 6(5 7) 8 9)");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("{2+3;4-5*2;}".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("{2+3;4-5*2;}".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, "b(0 2(1 3) 4 6(5 8(7 9)) 10 11)");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
@@ -228,17 +228,17 @@ class ParserTest {
 		macros.add("MACRO");
 
 		lexer.setMacros(macros);
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("MACRO".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("MACRO".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, ":0");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("MACRO()".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("MACRO()".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, ":0(1 2)");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new ByteArrayInputStream("MACRO(arg) hint \"hi\"".getBytes())));
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("MACRO(arg) hint \"hi\"".getBytes())));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree, ":0(1 2 3) :5(7)");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
@@ -248,14 +248,14 @@ class ParserTest {
 
 	@Test
 	public void sqfSnippetTest() throws IOException {
-		lexer.lex(new CharacterInputStream1(new FileInputStream(new File(DIR + "SQFSnippet01.sqf"))));
+		lexer.lex(new CharacterInputStream(new FileInputStream(new File(DIR + "SQFSnippet01.sqf"))));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree,
 				":3(1 9(5(7) 11(13))) :14 :18(16 20(22)) :23 :28(26 30) :31 :41(33(36(38)) "
 						+ "n(43 46(44 48) 49 50)) :51 :58(60(62(64))) :65 :67(69(71(76(74 78)))) :80");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.lex(new CharacterInputStream1(new FileInputStream(new File(DIR + "SQFSnippet02.sqf"))));
+		lexer.lex(new CharacterInputStream(new FileInputStream(new File(DIR + "SQFSnippet02.sqf"))));
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree,
 				":31(25(n(2 n(4 6 8) 9 n(11 13 14 16 17 19 21) 23) 27) n(33 35 36 38 39 41 43)) "
@@ -270,7 +270,7 @@ class ParserTest {
 		macros.add("CHECK_TRUE");
 
 		lexer.setMacros(macros);
-		CharacterInputStream1 in = new CharacterInputStream1(new FileInputStream(new File(DIR + "SQFSnippet03.sqf")));
+		CharacterInputStream in = new CharacterInputStream(new FileInputStream(new File(DIR + "SQFSnippet03.sqf")));
 		lexer.lex(in);
 		parser.parse();
 		IBuildableIndexTree.populateFromString(compareTree,

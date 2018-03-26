@@ -33,9 +33,13 @@ public class TreeWalker implements ITreeWalker {
 
 	@Override
 	public void walk() {
+		notifyStartOrEnd(true);
+
 		for (IndexTreeElement currentBranch : tree.branches()) {
 			visitNode(currentBranch);
 		}
+
+		notifyStartOrEnd(false);
 	}
 
 	/**
@@ -71,6 +75,20 @@ public class TreeWalker implements ITreeWalker {
 			listener.enterNode(node.getIndex() > 0 ? source.get(node.getIndex()) : null);
 		} else {
 			listener.exitNode(node.getIndex() > 0 ? source.get(node.getIndex()) : null);
+		}
+	}
+
+	/**
+	 * Notifies the listener about starting or finishing the parse tree walking
+	 * 
+	 * @param start
+	 *            Whether the walking has just started
+	 */
+	protected void notifyStartOrEnd(boolean start) {
+		if (start) {
+			listener.start();
+		} else {
+			listener.finished();
 		}
 	}
 

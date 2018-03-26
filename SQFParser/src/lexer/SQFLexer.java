@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import dataStructures.CharacterInputStream1;
+import dataStructures.CharacterInputStream;
 import dataStructures.ConsoleErrorListener;
 import dataStructures.ESQFTokentype;
 import dataStructures.IErrorListener;
@@ -45,7 +45,7 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 		this(new ConsoleErrorListener());
 	}
 
-	public SQFLexer(CharacterInputStream1 input, IErrorListener listener, HashSet<String> macros) throws IOException {
+	public SQFLexer(CharacterInputStream input, IErrorListener listener, HashSet<String> macros) throws IOException {
 		this(listener);
 
 		setMacros(macros);
@@ -59,15 +59,15 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 		errorListener = listener;
 	}
 
-	public SQFLexer(CharacterInputStream1 input) throws IOException {
+	public SQFLexer(CharacterInputStream input) throws IOException {
 		this(input, new ConsoleErrorListener(), new HashSet<String>());
 	}
 
-	public SQFLexer(CharacterInputStream1 input, IErrorListener listener) throws IOException {
+	public SQFLexer(CharacterInputStream input, IErrorListener listener) throws IOException {
 		this(input, listener, new HashSet<String>());
 	}
 
-	public SQFLexer(CharacterInputStream1 input, HashSet<String> macros) throws IOException {
+	public SQFLexer(CharacterInputStream input, HashSet<String> macros) throws IOException {
 		this(input, new ConsoleErrorListener(), macros);
 	}
 
@@ -80,7 +80,7 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 	 *            The character source
 	 * @throws IOException
 	 */
-	public void lex(CharacterInputStream1 input) throws IOException {
+	public void lex(CharacterInputStream input) throws IOException {
 		reset(false);
 		factory = new SQFTestTokenFactory(input.getBuffer());
 
@@ -114,7 +114,7 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 	 *            The InputStream to consume
 	 * @throws IOException
 	 */
-	private void matchWhitespace(CharacterInputStream1 input) throws IOException {
+	private void matchWhitespace(CharacterInputStream input) throws IOException {
 		int start = input.getOffset();
 
 		int c = input.read();
@@ -149,7 +149,7 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 	 *            The InputStream to consume
 	 * @throws IOException
 	 */
-	private void matchComment(CharacterInputStream1 input) throws IOException {
+	private void matchComment(CharacterInputStream input) throws IOException {
 		int start = input.getOffset();
 		int first = input.read();
 
@@ -213,7 +213,7 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 	 * @return Whether this function bailed out
 	 * @throws IOException
 	 */
-	private void matchPreprocessor(CharacterInputStream1 input, boolean bailout) throws IOException {
+	private void matchPreprocessor(CharacterInputStream input, boolean bailout) throws IOException {
 		int start = input.getOffset();
 		int c = input.read();
 
@@ -348,7 +348,7 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 	 *            The InputStream to consume
 	 * @throws IOException
 	 */
-	private void matchString(CharacterInputStream1 input) throws IOException {
+	private void matchString(CharacterInputStream input) throws IOException {
 		int start = input.getOffset();
 		int starter = input.read();
 
@@ -423,7 +423,7 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 	 *            The InputStream to consume
 	 * @throws IOException
 	 */
-	private void matchNumberOrIDOrMacro(CharacterInputStream1 input) throws IOException {
+	private void matchNumberOrIDOrMacro(CharacterInputStream input) throws IOException {
 		int start = input.getOffset();
 
 		int c = input.read();
@@ -486,7 +486,7 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 	 *         startChar) as a number
 	 * @throws IOException
 	 */
-	private boolean consumeNumber(CharacterInputStream1 input, int startChar, boolean allowScientific)
+	private boolean consumeNumber(CharacterInputStream input, int startChar, boolean allowScientific)
 			throws IOException {
 		startChar = Character.toLowerCase(startChar);
 
@@ -586,7 +586,7 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 	 * @return Whether this function has successfully consumed a hex-number-body
 	 * @throws IOException
 	 */
-	private boolean consumeHexNumberBody(CharacterInputStream1 input) throws IOException {
+	private boolean consumeHexNumberBody(CharacterInputStream input) throws IOException {
 		int c = Character.toLowerCase(input.read());
 
 		if (Character.isDigit(c) || (c >= 'a' && c <= 'f')) {
@@ -612,7 +612,7 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 	 *            The InputStream to consume
 	 * @throws IOException
 	 */
-	private String consumeID(CharacterInputStream1 input) throws IOException {
+	private String consumeID(CharacterInputStream input) throws IOException {
 		int c = input.read();
 
 		StringBuilder builder = new StringBuilder();
@@ -639,7 +639,7 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 	 *            The InputStream to consume
 	 * @throws IOException
 	 */
-	private void matchOperator(CharacterInputStream1 input) throws IOException {
+	private void matchOperator(CharacterInputStream input) throws IOException {
 		int start = input.getOffset();
 
 		int c = input.read();
@@ -721,7 +721,7 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 	 *            The InputStream to consume
 	 * @throws IOException
 	 */
-	private void matchBracket(CharacterInputStream1 input) throws IOException {
+	private void matchBracket(CharacterInputStream input) throws IOException {
 		int start = input.getOffset();
 
 		int c = input.read();

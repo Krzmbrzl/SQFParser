@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
-import dataStructures.CharacterInputStream1;
+import dataStructures.CharacterInputStream;
 import dataStructures.ESQFOperatorType;
 import dataStructures.SQFToken;
 import dataStructures.TokenBuffer;
@@ -17,7 +17,7 @@ class TokenTest {
 
 	@Test
 	void arithmetics() throws IOException {
-		SQFLexer lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("2+3*4^2/5-7".getBytes())));
+		SQFLexer lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("2+3*4^2/5-7".getBytes())));
 
 		TokenBuffer<SQFToken> buffer = lexer.getTokens();
 

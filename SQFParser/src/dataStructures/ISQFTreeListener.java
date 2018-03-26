@@ -38,4 +38,14 @@ public interface ISQFTreeListener {
 	 *            The IndexTree-Node corresponding to this binary expression.
 	 */
 	public void binaryExpression(SQFToken expression, IndexTreeElement node);
+	
+	/**
+	 * Gets called when starting to walk the tree
+	 */
+	public void start();
+
+	/**
+	 * Gets called when having finished walking the tree
+	 */
+	public void finished();
 }

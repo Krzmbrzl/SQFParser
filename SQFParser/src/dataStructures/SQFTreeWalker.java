@@ -74,4 +74,13 @@ public class SQFTreeWalker extends TreeWalker {
 		}
 	}
 
+	@Override
+	protected void notifyStartOrEnd(boolean start) {
+		if (start) {
+			listener.start();
+		} else {
+			listener.finished();
+		}
+	}
+
 }

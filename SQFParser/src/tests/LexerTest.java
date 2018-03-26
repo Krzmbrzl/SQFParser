@@ -13,7 +13,7 @@ import java.util.Iterator;
 
 import org.junit.jupiter.api.Test;
 
-import dataStructures.CharacterInputStream1;
+import dataStructures.CharacterInputStream;
 import dataStructures.ESQFOperatorType;
 import dataStructures.ESQFTokentype;
 import dataStructures.SQFToken;
@@ -28,7 +28,7 @@ class LexerTest {
 
 	@Test
 	void WhitespaceTest() throws IOException {
-		SQFLexer lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("    ".getBytes())));
+		SQFLexer lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("    ".getBytes())));
 
 		TokenBuffer<SQFToken> tokens = lexer.getTokens();
 
@@ -42,7 +42,7 @@ class LexerTest {
 		assertEquals(4, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream(" 	 ".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream(" 	 ".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -58,7 +58,7 @@ class LexerTest {
 
 	@Test
 	void PreprocessorTest() throws IOException {
-		SQFLexer lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("#define test".getBytes())));
+		SQFLexer lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("#define test".getBytes())));
 
 		TokenBuffer<SQFToken> tokens = lexer.getTokens();
 
@@ -72,7 +72,7 @@ class LexerTest {
 		assertEquals(12, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("# define test\n".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("# define test\n".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -87,7 +87,7 @@ class LexerTest {
 
 
 		lexer = new SQFLexer(
-				new CharacterInputStream1(new ByteArrayInputStream("# define test\\\n 12 #\n".getBytes())));
+				new CharacterInputStream(new ByteArrayInputStream("# define test\\\n 12 #\n".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -102,7 +102,7 @@ class LexerTest {
 
 
 		lexer = new SQFLexer(
-				new CharacterInputStream1(new ByteArrayInputStream("#ifdef test\n\t 12\n\n #endif".getBytes())));
+				new CharacterInputStream(new ByteArrayInputStream("#ifdef test\n\t 12\n\n #endif".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -116,7 +116,7 @@ class LexerTest {
 		assertEquals(25, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(
+		lexer = new SQFLexer(new CharacterInputStream(
 				new ByteArrayInputStream("#ifndef #else #test\n\t #end if #endif".getBytes())));
 
 		tokens = lexer.getTokens();
@@ -133,7 +133,7 @@ class LexerTest {
 
 	@Test
 	void CommentTest() throws IOException {
-		SQFLexer lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("// test here".getBytes())));
+		SQFLexer lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("// test here".getBytes())));
 
 		TokenBuffer<SQFToken> tokens = lexer.getTokens();
 
@@ -147,7 +147,7 @@ class LexerTest {
 		assertEquals(12, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("// 	 \n".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("// 	 \n".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -161,7 +161,7 @@ class LexerTest {
 		assertEquals(6, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("/*\n * / 	 \n*/".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("/*\n * / 	 \n*/".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -175,7 +175,7 @@ class LexerTest {
 		assertEquals(13, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("/*\n * / 	 \n*/\n".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("/*\n * / 	 \n*/\n".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -192,7 +192,7 @@ class LexerTest {
 	@Test
 	void StringTest() throws IOException {
 		SQFLexer lexer = new SQFLexer(
-				new CharacterInputStream1(new ByteArrayInputStream("\"My str # test in here\"".getBytes())));
+				new CharacterInputStream(new ByteArrayInputStream("\"My str # test in here\"".getBytes())));
 
 		TokenBuffer<SQFToken> tokens = lexer.getTokens();
 
@@ -206,7 +206,7 @@ class LexerTest {
 		assertEquals(23, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("'My str # test in here'".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("'My str # test in here'".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -221,7 +221,7 @@ class LexerTest {
 
 
 		lexer = new SQFLexer(
-				new CharacterInputStream1(new ByteArrayInputStream("'My str ''# test in'' here'".getBytes())));
+				new CharacterInputStream(new ByteArrayInputStream("'My str ''# test in'' here'".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -236,7 +236,7 @@ class LexerTest {
 
 
 		lexer = new SQFLexer(
-				new CharacterInputStream1(new ByteArrayInputStream("\"My str \"\"# test in\"\" here\"".getBytes())));
+				new CharacterInputStream(new ByteArrayInputStream("\"My str \"\"# test in\"\" here\"".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -250,7 +250,7 @@ class LexerTest {
 		assertEquals(27, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("\"My \tstr \n \there\"".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("\"My \tstr \n \there\"".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -264,7 +264,7 @@ class LexerTest {
 		assertEquals(17, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("'My \tstr \n \there'".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("'My \tstr \n \there'".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -281,7 +281,7 @@ class LexerTest {
 	@Test
 	void StringPreprocessorCombination() throws IOException {
 		SQFLexer lexer = new SQFLexer(
-				new CharacterInputStream1(new ByteArrayInputStream("\"My str \n#test in here\"".getBytes())));
+				new CharacterInputStream(new ByteArrayInputStream("\"My str \n#test in here\"".getBytes())));
 
 		TokenBuffer<SQFToken> tokens = lexer.getTokens();
 
@@ -301,7 +301,7 @@ class LexerTest {
 
 
 		lexer = new SQFLexer(
-				new CharacterInputStream1(new ByteArrayInputStream("\"My str \n# test in here\"".getBytes())));
+				new CharacterInputStream(new ByteArrayInputStream("\"My str \n# test in here\"".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -317,7 +317,7 @@ class LexerTest {
 
 
 		lexer = new SQFLexer(
-				new CharacterInputStream1(new ByteArrayInputStream("\"My str \n#test in here\n\"".getBytes())));
+				new CharacterInputStream(new ByteArrayInputStream("\"My str \n#test in here\n\"".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -342,7 +342,7 @@ class LexerTest {
 
 	@Test
 	void NumberTest() throws IOException {
-		SQFLexer lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("123".getBytes())));
+		SQFLexer lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("123".getBytes())));
 
 		TokenBuffer<SQFToken> tokens = lexer.getTokens();
 
@@ -356,7 +356,7 @@ class LexerTest {
 		assertEquals(3, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("123.5".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("123.5".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -370,7 +370,7 @@ class LexerTest {
 		assertEquals(5, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream(".25".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream(".25".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -384,7 +384,7 @@ class LexerTest {
 		assertEquals(3, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("$12aFF".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("$12aFF".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -398,7 +398,7 @@ class LexerTest {
 		assertEquals(6, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("0x12aFF".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("0x12aFF".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -412,7 +412,7 @@ class LexerTest {
 		assertEquals(7, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("1e123".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("1e123".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -426,7 +426,7 @@ class LexerTest {
 		assertEquals(5, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("1E123".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("1E123".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -440,7 +440,7 @@ class LexerTest {
 		assertEquals(5, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("3e123".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("3e123".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -454,7 +454,7 @@ class LexerTest {
 		assertEquals(5, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("3E123".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("3E123".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -468,7 +468,7 @@ class LexerTest {
 		assertEquals(5, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("3.2E123".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("3.2E123".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -482,7 +482,7 @@ class LexerTest {
 		assertEquals(7, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream(".2e678".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream(".2e678".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -496,7 +496,7 @@ class LexerTest {
 		assertEquals(6, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream(".2e-678".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream(".2e-678".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -510,7 +510,7 @@ class LexerTest {
 		assertEquals(7, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream(".2e+678".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream(".2e+678".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -526,7 +526,7 @@ class LexerTest {
 
 	@Test
 	void IDTest() throws IOException {
-		SQFLexer lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("_12a".getBytes())));
+		SQFLexer lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("_12a".getBytes())));
 
 		TokenBuffer<SQFToken> tokens = lexer.getTokens();
 
@@ -540,7 +540,7 @@ class LexerTest {
 		assertEquals(4, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("abc3".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("abc3".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -554,7 +554,7 @@ class LexerTest {
 		assertEquals(4, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("e1c3".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("e1c3".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -568,7 +568,7 @@ class LexerTest {
 		assertEquals(4, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("e12345c3".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("e12345c3".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -582,7 +582,7 @@ class LexerTest {
 		assertEquals(8, tokenInfo.stop(), "Wrong end index");
 
 
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("e12345".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("e12345".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -599,7 +599,7 @@ class LexerTest {
 	@Test
 	void operatorTest() throws IOException {
 		SQFLexer lexer = new SQFLexer(
-				new CharacterInputStream1(new ByteArrayInputStream("-*/!<>^=+==!=<=>=%&&||;:".getBytes())));
+				new CharacterInputStream(new ByteArrayInputStream("-*/!<>^=+==!=<=>=%&&||;:".getBytes())));
 
 		TokenBuffer<SQFToken> tokens = lexer.getTokens();
 
@@ -706,7 +706,7 @@ class LexerTest {
 
 	@Test
 	void inputFileTest() throws FileNotFoundException, IOException {
-		CharacterInputStream1 input = new CharacterInputStream1(new FileInputStream(new File(LEXER_FILE_PATH)));
+		CharacterInputStream input = new CharacterInputStream(new FileInputStream(new File(LEXER_FILE_PATH)));
 		SQFLexer lexer = new SQFLexer(input);
 
 		TokenBuffer<SQFToken> tokens = lexer.getTokens();
@@ -736,7 +736,7 @@ class LexerTest {
 
 		macros.add("MY_TEST_MACRO");
 
-		SQFLexer lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("MY_TEST_MACRO".getBytes())), macros);
+		SQFLexer lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("MY_TEST_MACRO".getBytes())), macros);
 
 		TokenBuffer<SQFToken> tokens = lexer.getTokens();
 
@@ -745,14 +745,14 @@ class LexerTest {
 		assertEquals(ESQFTokentype.MACRO, tokens.get(0).type(), "Expected macro type!");
 		
 		// macros must be case-sensitive
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("MY_tEST_MACRO".getBytes())), macros);
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("MY_tEST_MACRO".getBytes())), macros);
 		tokens = lexer.getTokens();
 		assertTrue(tokens.size() == 1, "Got " + tokens.size() + " tokens when expecting only one!");
 		assertEquals(ESQFOperatorType.NULAR, tokens.get(0).operatorType(), "Expected nular operator type!");
 		assertEquals(ESQFTokentype.ID, tokens.get(0).type(), "Expected ID type!");
 		
 		// macro with arguments
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("MY_TEST_MACRO(arg)".getBytes())), macros);
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("MY_TEST_MACRO(arg)".getBytes())), macros);
 		tokens = lexer.getTokens();
 		assertTrue(tokens.size() == 4, "Got " + tokens.size() + " tokens when expecting 3!");
 		assertEquals(ESQFOperatorType.MACRO, tokens.get(0).operatorType(), "Expected macro operator type!");
@@ -768,7 +768,7 @@ class LexerTest {
 	// @Test
 	void TestErroneousInput() throws IOException {
 		// TODO: is invalid; Only integers as exponents are allowed
-		SQFLexer lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("3.2e1.3".getBytes())));
+		SQFLexer lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("3.2e1.3".getBytes())));
 
 		TokenBuffer<SQFToken> tokens = lexer.getTokens();
 
@@ -783,7 +783,7 @@ class LexerTest {
 
 
 		// TODO: invalid
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream("3.2e$2Fa".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream("3.2e$2Fa".getBytes())));
 
 		tokens = lexer.getTokens();
 
@@ -798,7 +798,7 @@ class LexerTest {
 
 
 		// TODO: invalid
-		lexer = new SQFLexer(new CharacterInputStream1(new ByteArrayInputStream(".2e.678".getBytes())));
+		lexer = new SQFLexer(new CharacterInputStream(new ByteArrayInputStream(".2e.678".getBytes())));
 
 		tokens = lexer.getTokens();
 

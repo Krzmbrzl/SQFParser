@@ -3,7 +3,7 @@ package dataStructures;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class CharacterInputStream1 {
+public class CharacterInputStream {
 
 	// TODO: Process file in two threads -> BlockingQueue
 	// File reading via FileChannels
@@ -29,7 +29,7 @@ public class CharacterInputStream1 {
 	protected InputStream in;
 
 
-	public CharacterInputStream1(InputStream in) {
+	public CharacterInputStream(InputStream in) {
 		this.in = in;
 		characters = new CharacterBuffer();
 	}
