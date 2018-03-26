@@ -1,2 +1,2 @@
 # SQFParser
-A java implementation of a SQF parser
+A Java implementation of a SQF parser

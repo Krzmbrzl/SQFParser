@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="/home/robert/Documents/Programming/Abego/org.abego.treelayout.core-1.0.3.jar" sourcepath="/data/home/robert/Documents/Programming/Abego/org.abego.treelayout.core-1.0.3-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/home/robert/Documents/Programming/Abego/org.abego.treelayout.core-1.0.3-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/robert/Documents/Programming/Libraries/swt.jar" sourcepath="/data/home/robert/Documents/Programming/Libraries/src_swt.zip"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
