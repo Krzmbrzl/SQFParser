@@ -5,6 +5,10 @@ public class SQFTestTokenFactory extends AbstractSQFTokenFactory {
 	public SQFTestTokenFactory(CharacterBuffer buffer) {
 		super(buffer);
 	}
+	
+	public SQFTestTokenFactory() {
+		super();
+	}
 
 	@Override
 	public void initialize() {
@@ -25,19 +29,19 @@ public class SQFTestTokenFactory extends AbstractSQFTokenFactory {
 		lookupTable.put("==", new LookupTableEntry(6, ESQFOperatorType.BINARY));
 		lookupTable.put(">>", new LookupTableEntry(6, ESQFOperatorType.BINARY));
 		// binary commands
-		lookupTable.put("setpos", new LookupTableEntry(5, ESQFOperatorType.BINARY));
-		lookupTable.put("then", new LookupTableEntry(5, ESQFOperatorType.BINARY));
-		lookupTable.put("setpos", new LookupTableEntry(5, ESQFOperatorType.BINARY));
-		lookupTable.put("call", new LookupTableEntry(5, ESQFOperatorType.BINARY));
-		lookupTable.put("params", new LookupTableEntry(5, ESQFOperatorType.BINARY));
-		lookupTable.put("spawn", new LookupTableEntry(5, ESQFOperatorType.BINARY));
-		lookupTable.put("isequalto", new LookupTableEntry(5, ESQFOperatorType.BINARY));
-		lookupTable.put("execvm", new LookupTableEntry(5, ESQFOperatorType.BINARY));
-		lookupTable.put("select", new LookupTableEntry(5, ESQFOperatorType.BINARY));
-		lookupTable.put("random", new LookupTableEntry(5, ESQFOperatorType.BINARY));
-		lookupTable.put("foreach", new LookupTableEntry(5, ESQFOperatorType.BINARY));
-		lookupTable.put("do", new LookupTableEntry(5, ESQFOperatorType.BINARY));
-		lookupTable.put(":", new LookupTableEntry(5, ESQFOperatorType.BINARY));
+		lookupTable.put("setpos", BINARY);
+		lookupTable.put("then", BINARY);
+		lookupTable.put("setpos", BINARY);
+		lookupTable.put("call", BINARY);
+		lookupTable.put("params", BINARY);
+		lookupTable.put("spawn", BINARY);
+		lookupTable.put("isequalto", BINARY);
+		lookupTable.put("execvm", BINARY);
+		lookupTable.put("select", BINARY);
+		lookupTable.put("random", BINARY);
+		lookupTable.put("foreach", BINARY);
+		lookupTable.put("do", BINARY);
+		lookupTable.put(":", BINARY);
 		// else
 		lookupTable.put("else", new LookupTableEntry(4, ESQFOperatorType.BINARY));
 		// binary math operators
@@ -52,23 +56,23 @@ public class SQFTestTokenFactory extends AbstractSQFTokenFactory {
 		lookupTable.put("atan2", new LookupTableEntry(2, ESQFOperatorType.BINARY));
 		lookupTable.put("^", new LookupTableEntry(1, ESQFOperatorType.BINARY));
 		
-		lookupTable.put("hint", new LookupTableEntry(0, ESQFOperatorType.UNARY));
-		lookupTable.put("str", new LookupTableEntry(0, ESQFOperatorType.UNARY));
-		lookupTable.put("cos", new LookupTableEntry(0, ESQFOperatorType.UNARY));
-		lookupTable.put("sin", new LookupTableEntry(0, ESQFOperatorType.UNARY));
-		lookupTable.put("not", new LookupTableEntry(0, ESQFOperatorType.UNARY));
-		lookupTable.put("!", new LookupTableEntry(0, ESQFOperatorType.UNARY));
-		lookupTable.put("isnull", new LookupTableEntry(0, ESQFOperatorType.UNARY));
-		lookupTable.put("isnil", new LookupTableEntry(0, ESQFOperatorType.UNARY));
-		lookupTable.put("servercommandavailable", new LookupTableEntry(0, ESQFOperatorType.UNARY));
-		lookupTable.put("if", new LookupTableEntry(0, ESQFOperatorType.UNARY));
-		lookupTable.put("compile", new LookupTableEntry(0, ESQFOperatorType.UNARY));
-		lookupTable.put("preprocessfilelinenumbers", new LookupTableEntry(0, ESQFOperatorType.UNARY));
-		lookupTable.put("round", new LookupTableEntry(0, ESQFOperatorType.UNARY));
-		lookupTable.put("switch", new LookupTableEntry(0, ESQFOperatorType.UNARY));
-		lookupTable.put("case", new LookupTableEntry(0, ESQFOperatorType.UNARY));
-		lookupTable.put("default", new LookupTableEntry(0, ESQFOperatorType.UNARY));
-		lookupTable.put("private", new LookupTableEntry(0, ESQFOperatorType.UNARY));
+		lookupTable.put("hint", UNARY);
+		lookupTable.put("str", UNARY);
+		lookupTable.put("cos", UNARY);
+		lookupTable.put("sin", UNARY);
+		lookupTable.put("not", UNARY);
+		lookupTable.put("!", UNARY);
+		lookupTable.put("isnull", UNARY);
+		lookupTable.put("isnil", UNARY);
+		lookupTable.put("servercommandavailable", UNARY);
+		lookupTable.put("if", UNARY);
+		lookupTable.put("compile", UNARY);
+		lookupTable.put("preprocessfilelinenumbers", UNARY);
+		lookupTable.put("round", UNARY);
+		lookupTable.put("switch", UNARY);
+		lookupTable.put("case", UNARY);
+		lookupTable.put("default", UNARY);
+		lookupTable.put("private", UNARY);
 	}
 
 }

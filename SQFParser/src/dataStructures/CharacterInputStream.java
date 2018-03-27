@@ -3,7 +3,7 @@ package dataStructures;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class CharacterInputStream {
+public class CharacterInputStream implements ICharacterInputStream {
 
 	// TODO: Process file in two threads -> BlockingQueue
 	// File reading via FileChannels
@@ -59,10 +59,8 @@ public class CharacterInputStream {
 	/**
 	 * Unreads the last read character so that it will be returned the next time
 	 * {@link #read()} is invoked
-	 * 
-	 * @throws IOException
 	 */
-	public void unread() throws IOException {
+	public void unread() {
 		unreadOffset++;
 	}
 

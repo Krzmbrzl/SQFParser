@@ -6,11 +6,11 @@ public class SQFToken implements IToken {
 	protected int end;
 	protected int precedence;
 	protected ESQFOperatorType operatorType;
-	protected CharacterBuffer characterSource;
+	protected ICharacterBuffer characterSource;
 
 
 	public SQFToken(ESQFTokentype type, int start, int end, int precedence, ESQFOperatorType operatorType,
-			CharacterBuffer characterSource) {
+			ICharacterBuffer characterSource) {
 		this.type = type;
 		this.start = start;
 		this.end = end;

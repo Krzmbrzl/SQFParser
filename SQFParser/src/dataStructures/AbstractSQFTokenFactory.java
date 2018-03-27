@@ -1,13 +1,27 @@
 package dataStructures;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public abstract class AbstractSQFTokenFactory {
 
 	/**
-	 * The default entry
+	 * The default entry which is nular
 	 */
 	protected static LookupTableEntry DEFAULT = new LookupTableEntry(0, ESQFOperatorType.NULAR);
+	/**
+	 * Alias for {@link #DEFAULT}
+	 */
+	protected static LookupTableEntry NULAR = DEFAULT;
+	/**
+	 * The default unary lookup entry
+	 */
+	protected static LookupTableEntry UNARY = new LookupTableEntry(0, ESQFOperatorType.UNARY);
+	/**
+	 * The default binary lookup entry. It is for "ordinary" binary operators that
+	 * are not listed in {@link #specialOperators}
+	 */
+	protected static LookupTableEntry BINARY = new LookupTableEntry(5, ESQFOperatorType.BINARY);
 	/**
 	 * The default entry for macros
 	 */
@@ -16,6 +30,12 @@ public abstract class AbstractSQFTokenFactory {
 	 * The entry for the "other" type
 	 */
 	protected static LookupTableEntry OTHER = new LookupTableEntry(0, ESQFOperatorType.OTHER);
+
+	/**
+	 * A map of operators with "special" precedence
+	 */
+	protected static Map<String, LookupTableEntry> specialOperators;
+
 
 	protected static class LookupTableEntry {
 		int precedence;
@@ -44,7 +64,7 @@ public abstract class AbstractSQFTokenFactory {
 	/**
 	 * The default character buffer
 	 */
-	protected CharacterBuffer buffer;
+	protected ICharacterBuffer buffer;
 
 
 	public AbstractSQFTokenFactory(CharacterBuffer buffer) {
@@ -54,6 +74,10 @@ public abstract class AbstractSQFTokenFactory {
 
 	public AbstractSQFTokenFactory() {
 		lookupTable = new HashMap<>();
+
+		if (specialOperators == null) {
+			setUpSpecialOperators();
+		}
 
 		initialize();
 	}
@@ -73,7 +97,7 @@ public abstract class AbstractSQFTokenFactory {
 	 *            The characterBuffer corresponding to this token
 	 * @return The created token
 	 */
-	public SQFToken produce(ESQFTokentype type, int start, int end, CharacterBuffer buffer) {
+	public SQFToken produce(ESQFTokentype type, int start, int end, ICharacterBuffer buffer) {
 		LookupTableEntry entry = lookupTable.get(buffer.getText(start, end - start).toLowerCase());
 
 		if (entry == null) {
@@ -121,6 +145,64 @@ public abstract class AbstractSQFTokenFactory {
 	 */
 	public SQFToken produce(ESQFTokentype type, int start, int end) {
 		return produce(type, start, end, buffer);
+	}
+
+	/**
+	 * Sets the {@linkplain ICharacterBuffer} that should be associated with the
+	 * created tokens
+	 * 
+	 * @param buffer
+	 *            The buffer to associate the tokens with
+	 */
+	public void setBuffer(ICharacterBuffer buffer) {
+		this.buffer = buffer;
+	}
+
+	/**
+	 * Fills {@link #specialOperators} with content (all keys are in lowercase)
+	 */
+	protected void setUpSpecialOperators() {
+		specialOperators = new HashMap<String, LookupTableEntry>();
+
+		// assignment
+		specialOperators.put("=", new LookupTableEntry(10, ESQFOperatorType.BINARY));
+		// logic
+		specialOperators.put("or", new LookupTableEntry(8, ESQFOperatorType.BINARY));
+		specialOperators.put("||", new LookupTableEntry(8, ESQFOperatorType.BINARY));
+		specialOperators.put("and", new LookupTableEntry(7, ESQFOperatorType.BINARY));
+		specialOperators.put("&&", new LookupTableEntry(7, ESQFOperatorType.BINARY));
+		// comparison
+		specialOperators.put("!=", new LookupTableEntry(6, ESQFOperatorType.BINARY));
+		specialOperators.put("<", new LookupTableEntry(6, ESQFOperatorType.BINARY));
+		specialOperators.put(">", new LookupTableEntry(6, ESQFOperatorType.BINARY));
+		specialOperators.put("<=", new LookupTableEntry(6, ESQFOperatorType.BINARY));
+		specialOperators.put(">=", new LookupTableEntry(6, ESQFOperatorType.BINARY));
+		specialOperators.put("==", new LookupTableEntry(6, ESQFOperatorType.BINARY));
+		specialOperators.put(">>", new LookupTableEntry(6, ESQFOperatorType.BINARY));
+		// else
+		specialOperators.put("else", new LookupTableEntry(4, ESQFOperatorType.BINARY));
+		// binary math operators
+		specialOperators.put("+", new LookupTableEntry(3, ESQFOperatorType.BINARY));
+		specialOperators.put("-", new LookupTableEntry(3, ESQFOperatorType.BINARY));
+		specialOperators.put("min", new LookupTableEntry(3, ESQFOperatorType.BINARY));
+		specialOperators.put("max", new LookupTableEntry(3, ESQFOperatorType.BINARY));
+		specialOperators.put("*", new LookupTableEntry(2, ESQFOperatorType.BINARY));
+		specialOperators.put("/", new LookupTableEntry(2, ESQFOperatorType.BINARY));
+		specialOperators.put("%", new LookupTableEntry(2, ESQFOperatorType.BINARY));
+		specialOperators.put("mod", new LookupTableEntry(2, ESQFOperatorType.BINARY));
+		specialOperators.put("atan2", new LookupTableEntry(2, ESQFOperatorType.BINARY));
+		specialOperators.put("^", new LookupTableEntry(1, ESQFOperatorType.BINARY));
+	}
+
+	/**
+	 * Checks whether the given operator has a "special" precedence and thus has to
+	 * use the {@linkplain LookupTableEntry} as mapped in {@link #specialOperators}
+	 * 
+	 * @param operator
+	 *            The operator-name to check (has to be lowercase)
+	 */
+	protected boolean hasSpecialPrecedence(String operator) {
+		return specialOperators.containsKey(operator);
 	}
 
 	/**

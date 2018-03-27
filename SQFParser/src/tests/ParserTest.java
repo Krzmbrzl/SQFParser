@@ -22,6 +22,7 @@ import dataStructures.IBuildableIndexTree;
 import dataStructures.IErrorListener;
 import dataStructures.IndexTree;
 import dataStructures.IndexTreeElement;
+import dataStructures.SQFTestTokenFactory;
 import dataStructures.SQFToken;
 import dataStructures.TokenBuffer;
 import lexer.SQFLexer;
@@ -41,6 +42,7 @@ class ParserTest {
 	public static void setUp() {
 		compareTree = new IndexTree();
 		lexer = new SQFLexer();
+		lexer.setTokenFactory(new SQFTestTokenFactory());
 		parser = new SQFParser(lexer, new IErrorListener() {
 
 			@Override
