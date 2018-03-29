@@ -11,7 +11,7 @@ public class SQFTestTokenFactory extends AbstractSQFTokenFactory {
 	}
 
 	@Override
-	public void initialize() {
+	public void doInitialize() {
 		// TODO: https://gist.github.com/commy2/016676126737a9a4389c85925b45a68e
 		// assignment
 		lookupTable.put("=", new LookupTableEntry(10, ESQFOperatorType.BINARY));

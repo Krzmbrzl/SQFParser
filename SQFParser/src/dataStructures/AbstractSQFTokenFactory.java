@@ -36,6 +36,8 @@ public abstract class AbstractSQFTokenFactory {
 	 */
 	protected static Map<String, LookupTableEntry> specialOperators;
 
+	private boolean initialized;
+
 
 	protected static class LookupTableEntry {
 		int precedence;
@@ -78,8 +80,6 @@ public abstract class AbstractSQFTokenFactory {
 		if (specialOperators == null) {
 			setUpSpecialOperators();
 		}
-
-		initialize();
 	}
 
 
@@ -98,6 +98,9 @@ public abstract class AbstractSQFTokenFactory {
 	 * @return The created token
 	 */
 	public SQFToken produce(ESQFTokentype type, int start, int end, ICharacterBuffer buffer) {
+		if (!initialized) {
+			initialize();
+		}
 		LookupTableEntry entry = lookupTable.get(buffer.getText(start, end - start).toLowerCase());
 
 		if (entry == null) {
@@ -210,6 +213,15 @@ public abstract class AbstractSQFTokenFactory {
 	 * respective entries. The respective operator names need to be <b>lowercase</b>
 	 * as that's how it will be searched for them
 	 */
-	public abstract void initialize();
+	protected abstract void doInitialize();
+
+	/**
+	 * Initializes this factory
+	 */
+	public void initialize() {
+		doInitialize();
+
+		initialized = true;
+	}
 
 }

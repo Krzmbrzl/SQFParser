@@ -19,6 +19,11 @@ public class SQFParser {
 	protected static int BINARY_INFO_LEVEL = 1;
 
 	/**
+	 * The default error listener that will report errors to the console
+	 */
+	protected static IErrorListener defaultListener = new ConsoleErrorListener();
+
+	/**
 	 * An enum describing the state in which the parser currently is in in terms of
 	 * its expectation regarding any arguments
 	 */
@@ -126,12 +131,11 @@ public class SQFParser {
 	protected Stack<IndexTreeElement> bracketNodes;
 
 
-	public SQFParser(ITokenSource<SQFToken> source) {
-		this(source, new ConsoleErrorListener());
+	public SQFParser() {
+		this(defaultListener);
 	}
 
-	public SQFParser(ITokenSource<SQFToken> source, IErrorListener errorListener) {
-		this.source = source;
+	public SQFParser(IErrorListener errorListener) {
 		this.errorListener = errorListener;
 
 		parserState = new ParserState(EParserArgumentState.WAITING, new Stack<>(), new Stack<>(), new IndexTree(),
@@ -155,15 +159,20 @@ public class SQFParser {
 
 	/**
 	 * Parses the given input from the beginning to the end
+	 * 
+	 * @param source
+	 *            The token source to use for parsing
 	 */
-	public void parse() {
-		parse(0, null);
+	public void parse(ITokenSource<SQFToken> source) {
+		parse(source, 0, null);
 	}
 
 	/**
 	 * Starts parsing the respective content. The result of the parsing is reflected
 	 * in {@link #tree()}.
 	 * 
+	 * @param source
+	 *            The token source to use for parsing
 	 * @param start
 	 *            The token index to start parsing at. If the input should be
 	 *            considered from the start then this should be zero
@@ -174,8 +183,9 @@ public class SQFParser {
 	 *            field may be null.
 	 * @return The index of the last processed token
 	 */
-	public int parse(int start, ESQFTokentype stopAt) {
+	public int parse(ITokenSource<SQFToken> source, int start, ESQFTokentype stopAt) {
 		reset();
+		this.source = source;
 
 		// iterate through all tokens
 		int size = source.size();
@@ -646,19 +656,6 @@ public class SQFParser {
 	}
 
 	/**
-	 * Resets this parser so it can start parsing the given input
-	 * 
-	 * @param source
-	 *            The input token source to parse the next time {@link #parse()} is
-	 *            being involved
-	 */
-	public void reset(ITokenSource<SQFToken> source) {
-		this.source = source;
-
-		reset();
-	}
-
-	/**
 	 * Resets this parser so that it can start parsing again
 	 */
 	public void reset() {
@@ -667,5 +664,23 @@ public class SQFParser {
 		bracketNodes.clear();
 
 		currentTokenIndex = -1;
+	}
+
+	/**
+	 * Resets the error listener for this parser
+	 */
+	public void resetErrorListener() {
+		errorListener = defaultListener;
+	}
+
+	/**
+	 * Sets the error listener for this parser
+	 * 
+	 * @param listener
+	 *            The new listener to report errors to
+	 */
+	public void setErrorListener(IErrorListener listener) {
+		assert (listener != null);
+		errorListener = listener;
 	}
 }

@@ -4,15 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.abego.treelayout.util.DefaultTreeForTreeLayout;
-
-import abego.swt.INode;
-
-public class IndexTreeElement implements INode {
+public class IndexTreeElement {
 	public static final int INVALID = -2;
 	public static final int EMPTY = -1;
 	/**
-	 * Indicates that the lowest possible elvel should be chosen
+	 * Indicates that the lowest possible level should be chosen
 	 */
 	public static final int LOWEST_LEVEL = -5;
 
@@ -201,6 +197,13 @@ public class IndexTreeElement implements INode {
 	}
 
 	/**
+	 * Gets the text this element should be displayed as
+	 */
+	public String getDisplayText() {
+		return (getIndex() > 0) ? String.valueOf(index) : "";
+	}
+
+	/**
 	 * Changes the level of this and all child-elements by the given amount
 	 * 
 	 * @param amount
@@ -262,31 +265,6 @@ public class IndexTreeElement implements INode {
 		}
 
 		return builder.toString();
-	}
-
-	@Override
-	public String getDisplayText() {
-		return (index >= 0) ? String.valueOf(index) : "";
-	}
-
-	/**
-	 * Adds this element to the given abego tree by adding itself and recursively
-	 * all its children to it
-	 * 
-	 * @param tree
-	 *            The tree to add to
-	 * @param parent
-	 *            The parent node to add this one to
-	 */
-	public void addToAbegoTree(DefaultTreeForTreeLayout<INode> tree, INode parent) {
-		tree.addChild(parent, this);
-
-		if (!hasChildren())
-			return;
-
-		for (IndexTreeElement current : children) {
-			current.addToAbegoTree(tree, this);
-		}
 	}
 
 	/**

@@ -26,6 +26,9 @@ public class TreeWalker implements ITreeWalker {
 	 *            The listener to notify during walking
 	 */
 	public TreeWalker(IBuildableIndexTree tree, ITokenSource<? extends IToken> source, ITreeListener listener) {
+		assert(tree != null);
+		assert(source != null);
+		
 		this.tree = tree;
 		this.listener = listener;
 		this.source = source;
