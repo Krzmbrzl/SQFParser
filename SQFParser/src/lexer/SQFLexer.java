@@ -52,6 +52,7 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 
 	public SQFLexer(IErrorListener listener, HashSet<String> macros) {
 		setMacros(macros);
+		setErrorListener(listener);
 
 		lineStarts = new ArrayList<>();
 	}
@@ -810,6 +811,8 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 	 *            The {@linkplain AbstractSQFTokenFactory} to use
 	 */
 	public void setTokenFactory(AbstractSQFTokenFactory factory) {
+		assert(factory != null);
+		
 		this.factory = factory;
 	}
 
@@ -820,6 +823,8 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 	 *            The listener to report any errors to
 	 */
 	public void setErrorListener(IErrorListener listener) {
+		assert (listener != null);
+
 		errorListener = listener;
 	}
 }
