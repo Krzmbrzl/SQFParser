@@ -7,8 +7,10 @@ public interface ISQFTreeListener {
 	 * 
 	 * @param expression
 	 *            The token corresponding to the respective nular expression
+	 * @param node
+	 *            The IndexTree-Node corresponding to this nular expression
 	 */
-	public void nularExpression(SQFToken expression);
+	public void nularExpression(SQFToken expression, IndexTreeElement node);
 
 	/**
 	 * Gets called when encountering a unary expression. That means that the given
@@ -38,7 +40,7 @@ public interface ISQFTreeListener {
 	 *            The IndexTree-Node corresponding to this binary expression.
 	 */
 	public void binaryExpression(SQFToken expression, IndexTreeElement node);
-	
+
 	/**
 	 * Gets called when starting to walk the tree
 	 */

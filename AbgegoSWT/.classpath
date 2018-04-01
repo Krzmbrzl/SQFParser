@@ -7,6 +7,6 @@
 			<attribute name="javadoc_location" value="jar:file:/home/robert/Documents/Programming/Abego/org.abego.treelayout.core-1.0.3-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/home/robert/Documents/Programming/Libraries/swt.jar" sourcepath="/data/home/robert/Documents/Programming/Libraries/src_swt.zip"/>
+	<classpathentry kind="lib" path="/Data/home/robert/Documents/Programming/Libraries/swt-4.7.3-gtk-linux-x86_64/swt_4.7.3_x86_64.jar" sourcepath="/Data/home/robert/Documents/Programming/Libraries/swt-4.7.3-gtk-linux-x86_64/src.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

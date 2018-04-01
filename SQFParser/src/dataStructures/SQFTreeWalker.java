@@ -45,7 +45,7 @@ public class SQFTreeWalker extends TreeWalker {
 				// don't process stuff like brackets
 				return;
 			}
-			listener.nularExpression(token);
+			listener.nularExpression(token, node);
 			break;
 
 		case 1:
