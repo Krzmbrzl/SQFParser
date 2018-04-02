@@ -22,11 +22,17 @@ public interface ITreeListener {
 
 	/**
 	 * Gets called when starting to walk the tree
+	 * 
+	 * @param tree
+	 *            The tree as a whole
 	 */
-	public void start();
+	public void start(IBuildableIndexTree tree);
 
 	/**
 	 * Gets called when having finished walking the tree
+	 * 
+	 * @param tree
+	 *            The tree as a whole
 	 */
-	public void finished();
+	public void finished(IBuildableIndexTree tree);
 }

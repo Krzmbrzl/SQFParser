@@ -129,6 +129,11 @@ public class SQFParser {
 	 * The nodes associated with bracket expressions
 	 */
 	protected Stack<IndexTreeElement> bracketNodes;
+	/**
+	 * Indicates whether error messages about missing terminators should get
+	 * suppressed (because they are being processed elsewhere)
+	 */
+	protected boolean suppressMissingTerminator;
 
 
 	public SQFParser() {
@@ -538,7 +543,7 @@ public class SQFParser {
 			break;
 		case PROVIDING:
 			// error -> missing ';'
-			errorListener.error("Missing ';'", source.get(currentTokenIndex - 1));
+			missingTerminator(source.get(currentTokenIndex - 1));
 		case WAITING:
 			endBranch();
 			// set parser state to providing
@@ -563,6 +568,10 @@ public class SQFParser {
 	 *            token after which the terminator was expected
 	 */
 	protected void missingTerminator(SQFToken token) {
+		if (suppressMissingTerminator) {
+			return;
+		}
+
 		if (parserState.justProcessedMacro) {
 			// terminator could be in macro -> ignore
 			return;
@@ -682,5 +691,24 @@ public class SQFParser {
 	public void setErrorListener(IErrorListener listener) {
 		assert (listener != null);
 		errorListener = listener;
+	}
+
+	/**
+	 * Whether error messages for missing terminators (';' or ',' in array context)
+	 * should get suppressed
+	 * 
+	 * @param suppress
+	 *            Whether to suppress the messages
+	 */
+	public void suppressMissingTerminatorErrorMessages(boolean suppress) {
+		suppressMissingTerminator = suppress;
+	}
+
+	/**
+	 * Indicates whether error messages for missing terminators (';' or ',' in array
+	 * context) are being suppressed.
+	 */
+	public boolean isSuppressingMissingTerminatorErrorMessages() {
+		return suppressMissingTerminator;
 	}
 }

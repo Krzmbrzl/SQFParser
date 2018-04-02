@@ -26,9 +26,9 @@ public class TreeWalker implements ITreeWalker {
 	 *            The listener to notify during walking
 	 */
 	public TreeWalker(IBuildableIndexTree tree, ITokenSource<? extends IToken> source, ITreeListener listener) {
-		assert(tree != null);
-		assert(source != null);
-		
+		assert (tree != null);
+		assert (source != null);
+
 		this.tree = tree;
 		this.listener = listener;
 		this.source = source;
@@ -36,13 +36,13 @@ public class TreeWalker implements ITreeWalker {
 
 	@Override
 	public void walk() {
-		notifyStartOrEnd(true);
+		notifyStartOrEnd(true, tree);
 
 		for (IndexTreeElement currentBranch : tree.branches()) {
 			visitNode(currentBranch);
 		}
 
-		notifyStartOrEnd(false);
+		notifyStartOrEnd(false, tree);
 	}
 
 	/**
@@ -86,12 +86,14 @@ public class TreeWalker implements ITreeWalker {
 	 * 
 	 * @param start
 	 *            Whether the walking has just started
+	 * @param tree
+	 *            The tree as a whole
 	 */
-	protected void notifyStartOrEnd(boolean start) {
+	protected void notifyStartOrEnd(boolean start, IBuildableIndexTree tree) {
 		if (start) {
-			listener.start();
+			listener.start(tree);
 		} else {
-			listener.finished();
+			listener.finished(tree);
 		}
 	}
 

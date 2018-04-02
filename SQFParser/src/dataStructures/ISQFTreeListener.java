@@ -42,12 +42,42 @@ public interface ISQFTreeListener {
 	public void binaryExpression(SQFToken expression, IndexTreeElement node);
 
 	/**
-	 * Gets called when starting to walk the tree
+	 * Gets called when encountering an array expression. This means that the first
+	 * child of the given node is guaranteed to be of type
+	 * {@linkplain ESQFTokentype#SQUARE_BRACKET_OPEN} and the node itself is
+	 * guaranteed to be empty (as far as the index is concerned).
+	 * 
+	 * @param node
+	 *            The {@linkplain IndexTreeElement} corresponding to the array
+	 *            construct
 	 */
-	public void start();
+	public void array(IndexTreeElement node);
+
+	/**
+	 * Gets called when encountering an code expression. This means that the first
+	 * child of the given node is guaranteed to be of type
+	 * {@linkplain ESQFTokentype#CURLY_BRACKET_OPEN} and the node itself is
+	 * guaranteed to be empty (as far as the index is concerned).
+	 * 
+	 * @param node
+	 *            The {@linkplain IndexTreeElement} corresponding to the code
+	 *            construct
+	 */
+	public void code(IndexTreeElement node);
+
+	/**
+	 * Gets called when starting to walk the tree
+	 * 
+	 * @param tree
+	 *            The tree as a whole
+	 */
+	public void start(IBuildableIndexTree tree);
 
 	/**
 	 * Gets called when having finished walking the tree
+	 * 
+	 * @param tree
+	 *            The tree as a whole
 	 */
-	public void finished();
+	public void finished(IBuildableIndexTree tree);
 }

@@ -33,7 +33,32 @@ public class SQFTreeWalker extends TreeWalker {
 		}
 
 		if (node.getIndex() < 0) {
-			// either invalid or empty -> ignore
+			// either invalid or empty
+
+			if (node.getIndex() != IndexTreeElement.EMPTY || !node.hasChildren()) {
+				// invalid -> ignore
+				return;
+			}
+
+			IndexTreeElement child = node.getChildren().get(0);
+
+			if (child.getIndex() < 0) {
+				// invalid -> ignore
+				return;
+			}
+
+			SQFToken token = (SQFToken) getSource().get(child.getIndex());
+
+			if (token.type() == ESQFTokentype.SQUARE_BRACKET_OPEN) {
+				// array
+				listener.array(node);
+			} else {
+				if (token.type() == ESQFTokentype.CURLY_BRACKET_OPEN) {
+					// inline code
+					listener.code(node);
+				}
+			}
+
 			return;
 		}
 
@@ -69,17 +94,17 @@ public class SQFTreeWalker extends TreeWalker {
 			break;
 
 		default:
-			// array, inline code or macro -> not interesting for this purpose
+			// macro -> not interesting for this purpose
 			break;
 		}
 	}
 
 	@Override
-	protected void notifyStartOrEnd(boolean start) {
+	protected void notifyStartOrEnd(boolean start, IBuildableIndexTree tree) {
 		if (start) {
-			listener.start();
+			listener.start(tree);
 		} else {
-			listener.finished();
+			listener.finished(tree);
 		}
 	}
 
