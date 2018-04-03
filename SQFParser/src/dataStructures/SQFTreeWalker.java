@@ -66,8 +66,8 @@ public class SQFTreeWalker extends TreeWalker {
 		case 0:
 			// nular expressions can not encounter empty tree nodes
 			SQFToken token = (SQFToken) getSource().get(node.getIndex());
-			if (token.operatorType == ESQFOperatorType.OTHER) {
-				// don't process stuff like brackets
+			if (token.operatorType() == ESQFOperatorType.OTHER || token.operatorType() == ESQFOperatorType.MACRO) {
+				// don't process stuff like brackets or macros
 				return;
 			}
 			listener.nularExpression(token, node);
