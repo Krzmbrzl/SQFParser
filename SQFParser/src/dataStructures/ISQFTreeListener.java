@@ -3,7 +3,8 @@ package dataStructures;
 public interface ISQFTreeListener {
 
 	/**
-	 * Gets called when encountering a nular expression
+	 * Gets called when encountering a nular expression. Excluded are macros,
+	 * macro-content and the ID of variables to the left side of an assignment
 	 * 
 	 * @param expression
 	 *            The token corresponding to the respective nular expression

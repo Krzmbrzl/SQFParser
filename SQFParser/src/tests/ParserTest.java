@@ -158,8 +158,18 @@ class ParserTest {
 		parser.parse(lexer);
 		IBuildableIndexTree.populateFromString(compareTree, "b(0 n(1 2 3 5(4 6) 7) 8 10(9 12(11 13)) 14)");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
+		
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("[hint \" \"]".getBytes())));
+		parser.parse(lexer);
+		IBuildableIndexTree.populateFromString(compareTree, "b(0 1(3) 4)");
+		assertEquals(compareTree, parser.tree(), "Trees differ!");
+		
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("[hint {}]".getBytes())));
+		parser.parse(lexer);
+		IBuildableIndexTree.populateFromString(compareTree, "b(0 1(n(3 4)) 5)");
+		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		// displayTree(parser.tree(), lexer.getTokens());
+		//displayTree(parser.tree(), lexer.getTokens());
 	}
 
 	@Test
@@ -280,7 +290,7 @@ class ParserTest {
 						+ "n(90 91(92 93 94) 95)) 96 98(n(100 101(102 103 104 105 106 107 108 109 110 111) 112)) 113 115))) :116 :118");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		 displayTree(parser.tree(), lexer.getTokens());
+		// displayTree(parser.tree(), lexer.getTokens());
 		lexer.reset(true);
 	}
 

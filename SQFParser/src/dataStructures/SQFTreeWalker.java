@@ -6,6 +6,14 @@ public class SQFTreeWalker extends TreeWalker {
 	 * The listener to notify
 	 */
 	private ISQFTreeListener listener;
+	/**
+	 * Indicates whether this is currently in an assignment context
+	 */
+	protected boolean assignmentContext;
+	/**
+	 * Indicates whether this is currently in a macro context
+	 */
+	protected boolean macroContext;
 
 
 	public SQFTreeWalker(IBuildableIndexTree tree, ITokenSource<? extends SQFToken> source, ISQFTreeListener listener) {
@@ -27,6 +35,14 @@ public class SQFTreeWalker extends TreeWalker {
 	@Override
 	protected void notifyListener(boolean enter, IndexTreeElement node) {
 		if (enter) {
+			if (node.getIndex() >= 0 && node.getChildrenCount() == 2) {
+				assignmentContext = getSource().get(node.getIndex()).getText().equals("=");
+			}
+			if (node.getIndex() >= 0 && node.getChildrenCount() > 2) {
+				if (((SQFToken) getSource().get(node.getIndex())).type() == ESQFTokentype.MACRO) {
+					macroContext = true;
+				}
+			}
 			// only process exit-nodes so that the tree is walked from bottom to top (the
 			// order it will get executed)
 			return;
@@ -66,8 +82,10 @@ public class SQFTreeWalker extends TreeWalker {
 		case 0:
 			// nular expressions can not encounter empty tree nodes
 			SQFToken token = (SQFToken) getSource().get(node.getIndex());
-			if (token.operatorType() == ESQFOperatorType.OTHER || token.operatorType() == ESQFOperatorType.MACRO) {
+			if (assignmentContext || macroContext || token.operatorType() == ESQFOperatorType.OTHER
+					|| token.operatorType() == ESQFOperatorType.MACRO) {
 				// don't process stuff like brackets or macros
+				// don't feed in the new variable name as a nular expression
 				return;
 			}
 			listener.nularExpression(token, node);
@@ -85,6 +103,8 @@ public class SQFTreeWalker extends TreeWalker {
 
 		case 2:
 			// binary expression
+			// even if it was an assignment context: it won't matter from now on
+			assignmentContext = false;
 			token = (SQFToken) getSource().get(node.getIndex());
 			if (token.operatorType == ESQFOperatorType.OTHER) {
 				// don't process stuff like brackets
