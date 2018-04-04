@@ -24,8 +24,8 @@ import lexer.SQFLexer;
 
 class LexerTest {
 
-	public static String LEXER_FILE_PATH = System.getProperty("user.home") + "/Documents/Eclipse-Workspace"
-			+ "/SQFParser/src/tests/LexerInput01";
+	public static String LEXER_FILE_PATH = System.getProperty("user.home")
+			+ "/Documents/GitHub/SQFParser/SQFParser/src/tests/";
 
 	static SQFLexer lexer;
 
@@ -43,7 +43,7 @@ class LexerTest {
 		TokenBuffer<SQFToken> tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens (" + tokens.size() + ")");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		SQFToken tokenInfo = tokens.iterator().next();
 
@@ -57,7 +57,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens (" + tokens.size() + ")");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -73,7 +73,7 @@ class LexerTest {
 		TokenBuffer<SQFToken> tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens (" + tokens.size() + ")");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		SQFToken tokenInfo = tokens.iterator().next();
 
@@ -87,7 +87,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0, 14 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0, 14 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -101,7 +101,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0, 15, 21 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0, 15, 21 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -115,7 +115,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0, 12, 17, 18 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0, 12, 17, 18 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -130,7 +130,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0, 20 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0, 20 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -146,7 +146,7 @@ class LexerTest {
 		TokenBuffer<SQFToken> tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens (" + tokens.size() + ")");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		SQFToken tokenInfo = tokens.iterator().next();
 
@@ -160,7 +160,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0, 6 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0, 6 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -174,7 +174,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens (" + tokens.size() + ")");
-		assertArrayEquals(new Integer[] { 0, 3, 11 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0, 3, 11 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -188,13 +188,27 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(2, tokens.size(), "Wrong number of tokens (" + tokens.size() + ")");
-		assertArrayEquals(new Integer[] { 0, 3, 11, 14 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0, 3, 11, 14 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
 		assertEquals(ESQFTokentype.COMMENT, tokenInfo.type(), "Wrong token type!");
 		assertEquals(0, tokenInfo.start(), "Wrong start index");
 		assertEquals(13, tokenInfo.stop(), "Wrong end index");
+
+
+		lexer.lex(new CharacterInputStream(
+				new ByteArrayInputStream("// some stuff\n// On next line as well".getBytes())));
+
+		tokens = lexer.getTokens();
+
+		assertEquals(2, tokens.size(), "Wrong number of tokens (" + tokens.size() + ")");
+		assertArrayEquals(new Integer[] { 0, 14 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
+
+		tokenInfo = tokens.iterator().next();
+		assertEquals(ESQFTokentype.COMMENT, tokenInfo.type(), "Wrong token type!");
+		tokenInfo = tokens.iterator().next();
+		assertEquals(ESQFTokentype.COMMENT, tokenInfo.type(), "Wrong token type!");
 	}
 
 	@Test
@@ -204,7 +218,7 @@ class LexerTest {
 		TokenBuffer<SQFToken> tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens (" + tokens.size() + ")");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		SQFToken tokenInfo = tokens.iterator().next();
 
@@ -218,7 +232,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -232,7 +246,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -246,7 +260,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -260,7 +274,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0, 10 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0, 10 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -274,7 +288,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0, 10 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0, 10 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -290,7 +304,7 @@ class LexerTest {
 		TokenBuffer<SQFToken> tokens = lexer.getTokens();
 
 		assertEquals(2, tokens.size(), "Wrong number of tokens (" + tokens.size() + ")");
-		assertArrayEquals(new Integer[] { 0, 9 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0, 9 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		Iterator<SQFToken> iterator = tokens.iterator();
 		SQFToken tokenInfo1 = iterator.next();
@@ -309,7 +323,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens (" + tokens.size() + ")");
-		assertArrayEquals(new Integer[] { 0, 9 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0, 9 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		iterator = tokens.iterator();
 		tokenInfo1 = iterator.next();
@@ -324,7 +338,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(3, tokens.size(), "Wrong number of tokens (" + tokens.size() + ")");
-		assertArrayEquals(new Integer[] { 0, 9, 23 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0, 9, 23 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		iterator = tokens.iterator();
 		tokenInfo1 = iterator.next();
@@ -349,7 +363,7 @@ class LexerTest {
 		TokenBuffer<SQFToken> tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens (" + tokens.size() + ")");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		SQFToken tokenInfo = tokens.iterator().next();
 
@@ -363,7 +377,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -377,7 +391,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -391,7 +405,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -405,7 +419,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -419,7 +433,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -433,7 +447,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -447,7 +461,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -461,7 +475,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -475,7 +489,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -489,7 +503,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -503,7 +517,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -517,7 +531,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -533,7 +547,7 @@ class LexerTest {
 		TokenBuffer<SQFToken> tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens (" + tokens.size() + ")");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		SQFToken tokenInfo = tokens.iterator().next();
 
@@ -547,7 +561,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -561,7 +575,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -575,7 +589,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -589,7 +603,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -605,7 +619,7 @@ class LexerTest {
 		TokenBuffer<SQFToken> tokens = lexer.getTokens();
 
 		assertEquals(18, tokens.size(), "Wrong number of tokens (" + tokens.size() + ")");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		for (int i = 0; i < tokens.size(); i++) {
 			SQFToken tokenInfo = tokens.get(i);
@@ -707,7 +721,8 @@ class LexerTest {
 
 	@Test
 	void inputFileTest() throws FileNotFoundException, IOException {
-		CharacterInputStream input = new CharacterInputStream(new FileInputStream(new File(LEXER_FILE_PATH)));
+		CharacterInputStream input = new CharacterInputStream(
+				new FileInputStream(new File(LEXER_FILE_PATH + "/LexerInput01")));
 		lexer.lex(input);
 
 		TokenBuffer<SQFToken> tokens = lexer.getTokens();
@@ -727,8 +742,6 @@ class LexerTest {
 				ESQFTokentype.PREPROCESSOR, ESQFTokentype.WHITESPACE, ESQFTokentype.PREPROCESSOR,
 				ESQFTokentype.WHITESPACE, ESQFTokentype.SUBSTRING, ESQFTokentype.PREPROCESSOR,
 				ESQFTokentype.SUBSTRING_END }, tokenTypes, "Wrong token types");
-
-		System.out.println(input.getBuffer());
 	}
 
 	@Test
@@ -778,7 +791,7 @@ class LexerTest {
 		TokenBuffer<SQFToken> tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		SQFToken tokenInfo = tokens.iterator().next();
 
@@ -793,7 +806,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 
@@ -808,7 +821,7 @@ class LexerTest {
 		tokens = lexer.getTokens();
 
 		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndices(), "Wrong line indices");
+		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
 
 		tokenInfo = tokens.iterator().next();
 

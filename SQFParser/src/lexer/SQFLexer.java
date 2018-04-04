@@ -89,11 +89,14 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 		while (input.hasNext()) {
 			matchWhitespace(input);
 			matchPreprocessor(input, false);
-			matchComment(input);
-			matchString(input);
-			matchNumberOrIDOrMacro(input);
-			matchOperator(input);
-			matchBracket(input);
+			if (!matchComment(input)) {
+				// make sure that everything that can be matched as a comment, WS or
+				// Preprocessor is matched first
+				matchString(input);
+				matchNumberOrIDOrMacro(input);
+				matchOperator(input);
+				matchBracket(input);
+			}
 
 			if (lastOffset == input.getOffset()) {
 				// no token has been consumed -> error
@@ -149,14 +152,14 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 	 *            The InputStream to consume
 	 * @throws IOException
 	 */
-	private void matchComment(ICharacterInputStream input) throws IOException {
+	private boolean matchComment(ICharacterInputStream input) throws IOException {
 		int start = input.getOffset();
 		int first = input.read();
 
 		if (first != '/') {
 			// input is not a comment
 			input.unread();
-			return;
+			return false;
 		}
 
 		int second = input.read();
@@ -165,7 +168,7 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 			// input is not a comment
 			input.unread();
 			input.unread();
-			return;
+			return false;
 		}
 
 		int c = input.read();
@@ -198,6 +201,9 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 
 		if (start != input.getOffset()) {
 			tokens.add(factory.produce(ESQFTokentype.COMMENT, start, input.getOffset()));
+			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -754,7 +760,11 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 		return tokens;
 	}
 
-	public Integer[] getNewlineIndices() {
+	public List<Integer> getNewlineIndices() {
+		return lineStarts;
+	}
+
+	public Integer[] getNewlineIndicesAsArray() {
 		return lineStarts.toArray(new Integer[lineStarts.size()]);
 	}
 
@@ -811,8 +821,8 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 	 *            The {@linkplain AbstractSQFTokenFactory} to use
 	 */
 	public void setTokenFactory(AbstractSQFTokenFactory factory) {
-		assert(factory != null);
-		
+		assert (factory != null);
+
 		this.factory = factory;
 	}
 

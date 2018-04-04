@@ -94,8 +94,8 @@ public class SQFTreeWalker extends TreeWalker {
 		case 1:
 			// unary expression
 			token = (SQFToken) getSource().get(node.getIndex());
-			if (token.operatorType == ESQFOperatorType.OTHER) {
-				// don't process stuff like brackets
+			if (token.operatorType() == ESQFOperatorType.OTHER || token.operatorType() == ESQFOperatorType.MACRO) {
+				// don't process stuff like brackets or macros
 				return;
 			}
 			listener.unaryExpression(token, node);

@@ -29,8 +29,7 @@ import parser.SQFParser;
 import ui.TreeDisplayer;
 
 class ParserTest {
-	public static final String DIR = System.getProperty("user.home") + "/Documents/Eclipse-Workspace"
-			+ "/SQFParser/src/tests/";
+	public static final String DIR = LexerTest.LEXER_FILE_PATH;
 
 	static IBuildableIndexTree compareTree;
 	static SQFLexer lexer;
@@ -290,6 +289,19 @@ class ParserTest {
 						+ "n(90 91(92 93 94) 95)) 96 98(n(100 101(102 103 104 105 106 107 108 109 110 111) 112)) 113 115))) :116 :118");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
+		lexer.reset(true);
+		
+		macros.clear();
+		macros.add("CHECK_FALSE");
+		macros.add("DEBUG_EXEC");
+		macros.add("EVENT_LOG");
+		lexer.setMacros(macros);
+		in = new CharacterInputStream(new FileInputStream(new File(DIR + "EncounteredFalsePositives.sqf")));
+		lexer.lex(in);
+		parser.parse(lexer);
+		IBuildableIndexTree.populateFromString(compareTree, ":4(5 6 7 8 9 10 11 12 13 14 15 16 17 18 19) :21(22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37)");
+		assertEquals(compareTree, parser.tree(), "Trees differ!");
+		
 		// displayTree(parser.tree(), lexer.getTokens());
 		lexer.reset(true);
 	}

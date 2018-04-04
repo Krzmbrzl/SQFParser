@@ -608,8 +608,8 @@ public class SQFParser {
 			// no arguments for the macro -> match macro as a nular expression
 			nular();
 		} else {
-			// The macro has arguments -> binary structure
-			binary(token);
+			// The macro has arguments -> unary structure
+			unary();
 
 			currentTokenIndex++;
 
@@ -632,11 +632,6 @@ public class SQFParser {
 				case PARENTHESIS_OPEN:
 					bracketStack.push(currentToken);
 					openedParenthesis++;
-					break;
-
-				case SQUARE_BRACKET_OPEN:
-				case SQUARE_BRACKET_CLOSE:
-					errorListener.error("Array constructs not allowed as macro arguments!", currentToken);
 					break;
 
 				default:
