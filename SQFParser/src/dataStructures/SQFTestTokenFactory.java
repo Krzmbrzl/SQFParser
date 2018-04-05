@@ -73,6 +73,10 @@ public class SQFTestTokenFactory extends AbstractSQFTokenFactory {
 		lookupTable.put("case", UNARY);
 		lookupTable.put("default", UNARY);
 		lookupTable.put("private", UNARY);
+		lookupTable.put("leader", UNARY);
+		lookupTable.put("group", UNARY);
+		lookupTable.put("vehicle", UNARY);
+		lookupTable.put("getpos", UNARY);
 	}
 
 }

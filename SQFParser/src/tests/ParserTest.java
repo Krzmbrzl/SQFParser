@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import abego.swt.INode;
+import abego.swt.RootNode;
 import dataStructures.CharacterInputStream;
 import dataStructures.IBuildableIndexTree;
 import dataStructures.IErrorListener;
@@ -26,7 +27,7 @@ import dataStructures.SQFToken;
 import dataStructures.TokenBuffer;
 import lexer.SQFLexer;
 import parser.SQFParser;
-import ui.TreeDisplayer;
+import ui.IndexTreeDisplayer;
 
 class ParserTest {
 	public static final String DIR = LexerTest.LEXER_FILE_PATH;
@@ -314,15 +315,9 @@ class ParserTest {
 
 		Iterator<IndexTreeElement> branchIt = treeInput.branchIterator();
 
-		INode root = new INode() {
+		INode root = new RootNode();
 
-			@Override
-			public String getDisplayText() {
-				return "";
-			}
-		};
-
-		new TreeDisplayer<>(shell, SWT.NONE, treeInput, buffer);
+		new IndexTreeDisplayer<>(shell, SWT.NONE, treeInput, buffer);
 		shell.setLayout(new FillLayout());
 
 		shell.open();

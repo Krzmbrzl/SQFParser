@@ -125,4 +125,19 @@ public class IndexTree implements IBuildableIndexTree {
 		branches.clear();
 		currentBranch = null;
 	}
+
+	@Override
+	public boolean contains(IndexTreeElement element) {
+		if(branches.contains(element)) {
+			return true;
+		}else {
+			for(IndexTreeElement currentBranch : branches) {
+				if(currentBranch.contains(element) ) {
+					return true;
+				}
+			}
+			
+			return false;
+		}
+	}
 }

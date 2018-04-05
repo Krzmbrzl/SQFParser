@@ -8,6 +8,8 @@ import org.eclipse.swt.widgets.Shell;
 
 import abego.swt.AbegoTreeComposite;
 import abego.swt.INode;
+import abego.swt.Node;
+import abego.swt.RootNode;
 import abego.swt.SWTNodeExtentProvider;
 
 public class Activator {
@@ -18,22 +20,16 @@ public class Activator {
 
 		// shell.setLayout(new FillLayout());
 
-		INode root = new INode() {
-
-			@Override
-			public String getDisplayText() {
-				return "";
-			}
-		};
+		INode root = new RootNode();
 		DefaultTreeForTreeLayout<INode> tree = new DefaultTreeForTreeLayout<INode>(root);
-		tree.addChild(root, new INode() {
+		tree.addChild(root, new Node() {
 
 			@Override
 			public String getDisplayText() {
 				return ";";
 			}
 		});
-		tree.addChild(root, new INode() {
+		tree.addChild(root, new Node() {
 
 			@Override
 			public String getDisplayText() {

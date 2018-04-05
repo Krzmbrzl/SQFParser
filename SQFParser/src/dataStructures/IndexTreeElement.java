@@ -346,4 +346,26 @@ public class IndexTreeElement {
 
 		return builder.toString().replace(" )", ")");
 	}
+
+	/**
+	 * Checks whether this element contains the given one in any of its children.
+	 * This method will return false, if the given element is equal to this one
+	 * 
+	 * @param element
+	 *            The element to search for
+	 * @return Whether or not the given element is contained
+	 */
+	public boolean contains(IndexTreeElement element) {
+		if (!hasChildren()) {
+			return false;
+		}
+
+		for (IndexTreeElement currentElement : children) {
+			if (currentElement.equals(element) || currentElement.contains(currentElement)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

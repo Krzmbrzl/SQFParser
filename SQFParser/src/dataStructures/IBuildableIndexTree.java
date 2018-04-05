@@ -115,6 +115,15 @@ public interface IBuildableIndexTree {
 	 */
 	public void clear();
 
+	/**
+	 * Checks whether this tree somewhere contains the given element
+	 * 
+	 * @param element
+	 *            The element to search for
+	 * @return Whether or not this tree contains the given element
+	 */
+	public boolean contains(IndexTreeElement element);
+
 	public static final char EMPTY_BRANCH = 'b';
 	public static final char EMPTY_NODE = 'n';
 	public static final char NEW_BRANCH = ':';

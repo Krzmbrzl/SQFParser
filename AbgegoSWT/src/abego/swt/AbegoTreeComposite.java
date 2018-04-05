@@ -32,6 +32,10 @@ public class AbegoTreeComposite<T extends INode> extends Composite implements Pa
 	 * The color to use for the background of the drawn boxes
 	 */
 	protected Color boxBackground;
+	/**
+	 * How thick the lines are currently drawn
+	 */
+	protected int lineWidth = 1;
 
 	public AbegoTreeComposite(Composite parent, int style, TreeLayout<T> layout) {
 		super(parent, style);
@@ -47,11 +51,12 @@ public class AbegoTreeComposite<T extends INode> extends Composite implements Pa
 	@Override
 	public Point computeSize(int wHint, int hHint, boolean changed) {
 		Rectangle2D bounds = treeLayout.getBounds();
-		return new Point((int) bounds.getWidth() + 4, (int) bounds.getHeight() + 4);
+		return new Point((int) Math.ceil(bounds.getWidth() + lineWidth), (int) Math.ceil(bounds.getHeight()) + lineWidth);
 	}
 
 	@Override
 	public void paintControl(PaintEvent e) {
+		lineWidth = e.gc.getLineWidth();
 		drawLines(e.gc, getTree().getRoot());
 
 		for (T node : treeLayout.getNodeBounds().keySet()) {
@@ -105,13 +110,12 @@ public class AbegoTreeComposite<T extends INode> extends Composite implements Pa
 		if (box.getWidth() == 0) {
 			return;
 		}
-		
+
 		gc.setAntialias(SWT.ON);
 
 		// draw the box in the background
 		gc.setBackground(boxBackground);
-		gc.fillRoundRectangle((int) box.x, (int) box.y, (int) box.width, (int) box.height, arcSize,
-				arcSize);
+		gc.fillRoundRectangle((int) box.x, (int) box.y, (int) box.width, (int) box.height, arcSize, arcSize);
 
 		// add a border to the box
 		gc.setBackground(borderColor);
@@ -169,6 +173,11 @@ public class AbegoTreeComposite<T extends INode> extends Composite implements Pa
 	 */
 	public void setBoxBackground(Color boxBackground) {
 		this.boxBackground = boxBackground;
+	}
+
+	@Override
+	public Point computeSize(int wHint, int hHint) {
+		return computeSize(wHint, hHint, false);
 	}
 
 }
