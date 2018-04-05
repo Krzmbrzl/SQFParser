@@ -361,7 +361,7 @@ public class IndexTreeElement {
 		}
 
 		for (IndexTreeElement currentElement : children) {
-			if (currentElement.equals(element) || currentElement.contains(currentElement)) {
+			if (currentElement.equals(element) || currentElement.contains(element)) {
 				return true;
 			}
 		}

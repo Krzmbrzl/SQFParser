@@ -17,18 +17,20 @@ public class Activator {
 		SQFLexer lexer = new SQFLexer();
 		lexer.setTokenFactory(new SQFTestTokenFactory());
 		SQFParser parser = new SQFParser();
-		
-		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("leader group player setPos getPos vehicle player; hint 'Test';{2+3;4-5;}".getBytes())));
+
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream(
+				"leader group player setPos getPos vehicle player; hint 'Test';{2+[hint 'Test'];4-5;} count test"
+						.getBytes())));
 		parser.parse(lexer);
-		
+
 		Display display = new Display();
-		
+
 		// open TreeUI
 		Shell treeUIShell = new Shell(display);
 		treeUIShell.setLayout(new FillLayout());
-		
+
 		new TreeUI(treeUIShell, SWT.BORDER, parser.tree(), lexer);
-		
+
 		treeUIShell.open();
 
 		// run the event loop as long as the window is open

@@ -42,6 +42,7 @@ public class SQFTestTokenFactory extends AbstractSQFTokenFactory {
 		lookupTable.put("foreach", BINARY);
 		lookupTable.put("do", BINARY);
 		lookupTable.put(":", BINARY);
+		lookupTable.put("count", BINARY);
 		// else
 		lookupTable.put("else", new LookupTableEntry(4, ESQFOperatorType.BINARY));
 		// binary math operators

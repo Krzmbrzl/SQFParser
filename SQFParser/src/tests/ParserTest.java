@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.Set;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
@@ -15,19 +15,16 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import abego.swt.INode;
-import abego.swt.RootNode;
 import dataStructures.CharacterInputStream;
 import dataStructures.IBuildableIndexTree;
 import dataStructures.IErrorListener;
+import dataStructures.ITokenSource;
 import dataStructures.IndexTree;
-import dataStructures.IndexTreeElement;
 import dataStructures.SQFTestTokenFactory;
 import dataStructures.SQFToken;
-import dataStructures.TokenBuffer;
 import lexer.SQFLexer;
 import parser.SQFParser;
-import ui.IndexTreeDisplayer;
+import ui.TreeUI;
 
 class ParserTest {
 	public static final String DIR = LexerTest.LEXER_FILE_PATH;
@@ -290,34 +287,44 @@ class ParserTest {
 						+ "n(90 91(92 93 94) 95)) 96 98(n(100 101(102 103 104 105 106 107 108 109 110 111) 112)) 113 115))) :116 :118");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 
-		lexer.reset(true);
+		// displayTree(parser.tree(), lexer.getTokens());
 		
-		macros.clear();
+		lexer.reset(true);
+	}
+	
+	@Test
+	public void encounteredParseErrors() throws IOException {
+		Set<String> macros = new HashSet<>();
 		macros.add("CHECK_FALSE");
 		macros.add("DEBUG_EXEC");
 		macros.add("EVENT_LOG");
+		macros.add("GVAR");
+		
 		lexer.setMacros(macros);
-		in = new CharacterInputStream(new FileInputStream(new File(DIR + "EncounteredFalsePositives.sqf")));
-		lexer.lex(in);
+		
+		lexer.lex(new CharacterInputStream(new FileInputStream(new File(DIR + "EncounteredParseErrors01.sqf"))));
 		parser.parse(lexer);
 		IBuildableIndexTree.populateFromString(compareTree, ":4(5 6 7 8 9 10 11 12 13 14 15 16 17 18 19) :21(22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37)");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
 		
-		// displayTree(parser.tree(), lexer.getTokens());
+		lexer.lex(new CharacterInputStream(new FileInputStream(new File(DIR + "EncounteredParseErrors02.sqf"))));
+		parser.parse(lexer);
+		IBuildableIndexTree.populateFromString(compareTree, ":0(1 2) b(4 6)");
+		assertEquals(compareTree, parser.tree(), "Trees differ!");
+		
+		// displayTree(parser.tree(), lexer);
+		
 		lexer.reset(true);
 	}
 
 
 	@SuppressWarnings("unused")
-	private static void displayTree(IBuildableIndexTree treeInput, TokenBuffer<SQFToken> buffer) {
+	private static void displayTree(IBuildableIndexTree treeInput, ITokenSource<SQFToken> buffer) {
 		Display display = new Display();
 		Shell shell = new Shell(display);
-
-		Iterator<IndexTreeElement> branchIt = treeInput.branchIterator();
-
-		INode root = new RootNode();
-
-		new IndexTreeDisplayer<>(shell, SWT.NONE, treeInput, buffer);
+		
+		new TreeUI(shell, SWT.NONE, treeInput, lexer);
+		
 		shell.setLayout(new FillLayout());
 
 		shell.open();

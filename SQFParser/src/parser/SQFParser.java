@@ -656,6 +656,8 @@ public class SQFParser {
 
 			// set parser state to providing
 			parserState.argumentState = EParserArgumentState.PROVIDING;
+			//by calling unary() the pendingLevels have been pushed with the level of the macro -> remove it
+			parserState.pendingLevels.pop();
 		}
 	}
 

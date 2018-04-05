@@ -36,14 +36,52 @@ public class AbegoTreeComposite<T extends INode> extends Composite implements Pa
 	 * How thick the lines are currently drawn
 	 */
 	protected int lineWidth = 1;
+	/**
+	 * Indicating how the lines should be drawn
+	 */
+	protected ELineStyle lineStyle;
 
+
+	/**
+	 * Creates a new instance of this composite. This constructor will use the
+	 * {@linkplain ELineStyle#CORNERED} line style as default.
+	 * 
+	 * @param parent
+	 *            The composite's parent
+	 * @param style
+	 *            The component's style (see {@linkplain SWT} and
+	 *            {@linkplain Composite}
+	 * @param layout
+	 *            The {@linkplain TreeLayout} responsible for all tree-related
+	 *            information
+	 */
 	public AbegoTreeComposite(Composite parent, int style, TreeLayout<T> layout) {
+		this(parent, style, layout, ELineStyle.CORNERED);
+	}
+
+	/**
+	 * Creates a new instance of this composite
+	 * 
+	 * @param parent
+	 *            The composite's parent
+	 * @param style
+	 *            The component's style (see {@linkplain SWT} and
+	 *            {@linkplain Composite}
+	 * @param layout
+	 *            The {@linkplain TreeLayout} responsible for all tree-related
+	 *            information
+	 * @param lineStyle
+	 *            The {@linkplain ELineStyle} indicating how how the lines between
+	 *            the nodes should be drawn
+	 */
+	public AbegoTreeComposite(Composite parent, int style, TreeLayout<T> layout, ELineStyle lineStyle) {
 		super(parent, style);
 
 		this.treeLayout = layout;
 
 		boxBackground = getBackground();
 		borderColor = getDisplay().getSystemColor(SWT.COLOR_BLACK);
+		this.lineStyle = lineStyle;
 
 		this.addPaintListener(this);
 	}
@@ -51,7 +89,8 @@ public class AbegoTreeComposite<T extends INode> extends Composite implements Pa
 	@Override
 	public Point computeSize(int wHint, int hHint, boolean changed) {
 		Rectangle2D bounds = treeLayout.getBounds();
-		return new Point((int) Math.ceil(bounds.getWidth() + lineWidth), (int) Math.ceil(bounds.getHeight()) + lineWidth);
+		return new Point((int) Math.ceil(bounds.getWidth() + lineWidth),
+				(int) Math.ceil(bounds.getHeight()) + lineWidth);
 	}
 
 	@Override
@@ -79,16 +118,31 @@ public class AbegoTreeComposite<T extends INode> extends Composite implements Pa
 	 */
 	protected void drawLines(GC gc, T parent) {
 		if (!getTree().isLeaf(parent)) {
-			Rectangle2D.Double b1 = treeLayout.getNodeBounds().get(parent);
-			double x1 = b1.getCenterX();
-			double y1 = b1.getCenterY();
+			int parentHeight = (int) treeLayout.getNodeBounds().get(parent).getHeight();
 
+			Rectangle2D.Double bounds = treeLayout.getNodeBounds().get(parent);
+			int xCenter = (int) bounds.getCenterX();
+			int yCenter = (int) bounds.getCenterY();
 
-			for (T child : getTree().getChildren(parent)) {
-				Rectangle2D.Double b2 = treeLayout.getNodeBounds().get(child);
-				gc.drawLine((int) x1, (int) y1, (int) b2.getCenterX(), (int) b2.getCenterY());
+			for (T currentChild : getTree().getChildren(parent)) {
+				Rectangle2D.Double childBounds = treeLayout.getNodeBounds().get(currentChild);
 
-				drawLines(gc, child);
+				if (lineStyle == ELineStyle.CORNERED) {
+					// draw cornered lines
+					int halfHeight = (int) (treeLayout.getConfiguration().getGapBetweenNodes(parent, currentChild) / 2);
+					gc.drawLine(xCenter, yCenter, xCenter, yCenter + halfHeight + parentHeight / 2);
+
+					int childXCenter = (int) childBounds.getCenterX();
+					int childYCenter = (int) childBounds.getCenterY();
+
+					gc.drawLine(xCenter, yCenter + halfHeight + parentHeight / 2, childXCenter, yCenter + halfHeight + parentHeight / 2);
+					gc.drawLine(childXCenter, yCenter + halfHeight + parentHeight / 2, childXCenter, childYCenter);
+				} else {
+					// draw direct lines
+					gc.drawLine(xCenter, yCenter, (int) childBounds.getCenterX(), (int) childBounds.getCenterY());
+				}
+
+				drawLines(gc, currentChild);
 			}
 		}
 	}

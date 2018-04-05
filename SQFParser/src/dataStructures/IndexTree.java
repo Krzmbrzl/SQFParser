@@ -128,16 +128,12 @@ public class IndexTree implements IBuildableIndexTree {
 
 	@Override
 	public boolean contains(IndexTreeElement element) {
-		if(branches.contains(element)) {
-			return true;
-		}else {
-			for(IndexTreeElement currentBranch : branches) {
-				if(currentBranch.contains(element) ) {
-					return true;
-				}
+		for (IndexTreeElement currentBranch : branches) {
+			if (currentBranch.equals(element) || currentBranch.contains(element)) {
+				return true;
 			}
-			
-			return false;
 		}
+
+		return false;
 	}
 }
