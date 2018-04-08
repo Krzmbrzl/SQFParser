@@ -92,9 +92,9 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 			if (!matchComment(input)) {
 				// make sure that everything that can be matched as a comment, WS or
 				// Preprocessor is matched first
+				matchOperator(input);
 				matchString(input);
 				matchNumberOrIDOrMacro(input);
-				matchOperator(input);
 				matchBracket(input);
 			}
 
