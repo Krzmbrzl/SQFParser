@@ -337,6 +337,11 @@ public class SQFParser {
 	 *            "bracket node" to add to ({@link #bracketNodes} may not be empty)
 	 */
 	protected void closeBracket(boolean addCurrentToken) {
+		if (states.isEmpty()) {
+			// There is no magic to be done here (propably an unclosed bracket in a macro
+			// expression)
+			return;
+		}
 		ParserState subState = parserState;
 		parserState = states.pop();
 
@@ -656,7 +661,8 @@ public class SQFParser {
 
 			// set parser state to providing
 			parserState.argumentState = EParserArgumentState.PROVIDING;
-			//by calling unary() the pendingLevels have been pushed with the level of the macro -> remove it
+			// by calling unary() the pendingLevels have been pushed with the level of the
+			// macro -> remove it
 			parserState.pendingLevels.pop();
 		}
 	}
