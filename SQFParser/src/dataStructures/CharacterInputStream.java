@@ -2,6 +2,8 @@ package dataStructures;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 public class CharacterInputStream implements ICharacterInputStream {
 
@@ -26,11 +28,11 @@ public class CharacterInputStream implements ICharacterInputStream {
 	/**
 	 * The inputStream to use
 	 */
-	protected InputStream in;
+	protected InputStreamReader in;
 
 
 	public CharacterInputStream(InputStream in) {
-		this.in = in;
+		this.in = new InputStreamReader(in, StandardCharsets.UTF_8);
 		characters = new CharacterBuffer();
 	}
 
@@ -48,6 +50,10 @@ public class CharacterInputStream implements ICharacterInputStream {
 			return characters.get(offset - unreadOffset--);
 		}
 		int c = in.read();
+
+		while(Character.isIdentifierIgnorable(c)) {
+			c = in.read();
+		}
 
 		offset++;
 

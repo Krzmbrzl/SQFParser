@@ -513,7 +513,7 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 
 			if (!Character.isDigit(c)) {
 				// notify error listener about missing digit
-				errorListener.error("Error on '" + (char) c + "' - Digits extected to complete scientific notation",
+				errorListener.error("Error on '" + (char) c + "' - Digits expected to complete scientific notation",
 						factory.produce(ESQFTokentype.ERROR_TOKEN, input.getOffset() - 1, input.getOffset()));
 				// consume as number anyway
 				return true;

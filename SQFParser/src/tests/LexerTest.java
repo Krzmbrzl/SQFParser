@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import dataStructures.CharacterInputStream;
 import dataStructures.ESQFOperatorType;
 import dataStructures.ESQFTokentype;
+import dataStructures.IErrorListener;
 import dataStructures.SQFTestTokenFactory;
 import dataStructures.SQFToken;
 import dataStructures.TokenBuffer;
@@ -25,7 +27,7 @@ import lexer.SQFLexer;
 class LexerTest {
 
 	public static String LEXER_FILE_PATH = System.getProperty("user.home")
-			+ "/Documents/GitHub/SQFParser/SQFParser/src/tests/";
+			+ "/Documents/Git/SQFParser/SQFParser/src/tests/";
 
 	static SQFLexer lexer;
 
@@ -783,54 +785,20 @@ class LexerTest {
 		lexer.reset(true);
 	}
 
-	// @Test
-	void TestErroneousInput() throws IOException {
-		// TODO: is invalid; Only integers as exponents are allowed
-		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("3.2e1.3".getBytes())));
+	@Test
+	void unicodeTest() throws IOException {
+		lexer.setErrorListener(new IErrorListener() {
 
-		TokenBuffer<SQFToken> tokens = lexer.getTokens();
+			@Override
+			public void error(String msg, SQFToken token) {
+				fail("Expected no error but got: " + msg);
+			}
+		});
+		
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("äöü//°".getBytes(StandardCharsets.UTF_8))));
 
-		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
-
-		SQFToken tokenInfo = tokens.iterator().next();
-
-		assertEquals(ESQFTokentype.NUMBER, tokenInfo.type(), "Wrong token type!");
-		assertEquals(0, tokenInfo.start(), "Wrong start index");
-		assertEquals(7, tokenInfo.stop(), "Wrong end index");
-
-
-		// TODO: invalid
-		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("3.2e$2Fa".getBytes())));
-
-		tokens = lexer.getTokens();
-
-		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
-
-		tokenInfo = tokens.iterator().next();
-
-		assertEquals(ESQFTokentype.NUMBER, tokenInfo.type(), "Wrong token type!");
-		assertEquals(0, tokenInfo.start(), "Wrong start index");
-		assertEquals(8, tokenInfo.stop(), "Wrong end index");
-
-
-		// TODO: invalid
-		lexer.lex(new CharacterInputStream(new ByteArrayInputStream(".2e.678".getBytes())));
-
-		tokens = lexer.getTokens();
-
-		assertEquals(1, tokens.size(), "Wrong number of tokens");
-		assertArrayEquals(new Integer[] { 0 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
-
-		tokenInfo = tokens.iterator().next();
-
-		assertEquals(ESQFTokentype.NUMBER, tokenInfo.type(), "Wrong token type!");
-		assertEquals(0, tokenInfo.start(), "Wrong start index");
-		assertEquals(7, tokenInfo.stop(), "Wrong end index");
+		lexer.resetListener();
 	}
-
-	// TODO: test weird input such as ° and äöü
 
 	public String getText(int[] tokenInfo, InputStream source) {
 		return "";
