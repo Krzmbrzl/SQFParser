@@ -285,7 +285,7 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 			if (processingIfPart && counter == ifStarter.length) {
 				isIf = true;
 				processingIfPart = false;
-				counter = 0; // make counter recycable for end-detection
+				counter = 0; // make counter recyclable for end-detection
 			}
 
 			if (isIf) {

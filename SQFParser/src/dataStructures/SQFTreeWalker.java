@@ -106,8 +106,8 @@ public class SQFTreeWalker extends TreeWalker {
 			// even if it was an assignment context: it won't matter from now on
 			assignmentContext = false;
 			token = (SQFToken) getSource().get(node.getIndex());
-			if (token.operatorType == ESQFOperatorType.OTHER) {
-				// don't process stuff like brackets
+			if (token.operatorType == ESQFOperatorType.OTHER || token.operatorType == ESQFOperatorType.MACRO) {
+				// don't process stuff like brackets or macros
 				return;
 			}
 			listener.binaryExpression(token, node);
