@@ -86,6 +86,10 @@ public class SQFTreeWalker extends TreeWalker {
 					|| token.operatorType() == ESQFOperatorType.MACRO) {
 				// don't process stuff like brackets or macros
 				// don't feed in the new variable name as a nular expression
+				
+				// make sure the actual assignent is fed as a nular expression
+				assignmentContext = false;
+				
 				return;
 			}
 			listener.nularExpression(token, node);
