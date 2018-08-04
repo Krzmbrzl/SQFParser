@@ -101,7 +101,7 @@ public abstract class AbstractSQFTokenFactory {
 		if (!initialized) {
 			initialize();
 		}
-		LookupTableEntry entry = lookupTable.get(buffer.getText(start, end - start).toLowerCase());
+		LookupTableEntry entry = type == ESQFTokentype.MACRO ? null : lookupTable.get(buffer.getText(start, end - start).toLowerCase());
 
 		if (entry == null) {
 			switch (type) {

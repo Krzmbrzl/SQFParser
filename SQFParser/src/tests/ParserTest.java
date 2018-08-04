@@ -250,6 +250,12 @@ class ParserTest {
 		parser.parse(lexer);
 		IBuildableIndexTree.populateFromString(compareTree, ":0(1 2 3) :5(7)");
 		assertEquals(compareTree, parser.tree(), "Trees differ!");
+		
+		macros.add("PRIVATE");
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("PRIVATE(_a, 6)".getBytes())));
+		parser.parse(lexer);
+		IBuildableIndexTree.populateFromString(compareTree, ":0(1 2 3 4 5 6)");
+		assertEquals(compareTree, parser.tree());		
 
 		lexer.reset(true);
 	}

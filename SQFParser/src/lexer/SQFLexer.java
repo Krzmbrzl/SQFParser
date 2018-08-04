@@ -87,16 +87,16 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 		int lastOffset = 0;
 
 		while (input.hasNext()) {
-			matchWhitespace(input);
-			matchPreprocessor(input, false);
-			if (!matchComment(input)) {
-				// make sure that everything that can be matched as a comment, WS or
-				// Preprocessor is matched first
-				matchOperator(input);
-				matchString(input);
-				matchNumberOrIDOrMacro(input);
-				matchBracket(input);
-			}
+			// consecutively execute these methods until the first one returns true
+			// (produces a token) then start from the beginning again in the next iteration
+			@SuppressWarnings("unused")
+			boolean dummy = matchWhitespace(input) 
+					|| matchPreprocessor(input, false) 
+					|| matchComment(input)
+					|| matchOperator(input) 
+					|| matchString(input) 
+					|| matchNumberOrIDOrMacro(input)
+					|| matchBracket(input);
 
 			if (lastOffset == input.getOffset()) {
 				// no token has been consumed -> error
@@ -117,14 +117,14 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 	 *            The InputStream to consume
 	 * @throws IOException
 	 */
-	private void matchWhitespace(ICharacterInputStream input) throws IOException {
+	private boolean matchWhitespace(ICharacterInputStream input) throws IOException {
 		int start = input.getOffset();
 
 		int c = input.read();
 
 		if (!Character.isWhitespace(c)) {
 			input.unread();
-			return;
+			return false;
 		}
 
 		while (Character.isWhitespace(c)) {
@@ -141,7 +141,10 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 		if (start != input.getOffset()) {
 			// create token
 			tokens.add(factory.produce(ESQFTokentype.WHITESPACE, start, input.getOffset()));
+			return true;
 		}
+
+		return false;
 	}
 
 	/**
@@ -219,14 +222,14 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 	 * @return Whether this function bailed out
 	 * @throws IOException
 	 */
-	private void matchPreprocessor(ICharacterInputStream input, boolean bailout) throws IOException {
+	private boolean matchPreprocessor(ICharacterInputStream input, boolean bailout) throws IOException {
 		int start = input.getOffset();
 		int c = input.read();
 
 		if (c != '#') {
 			// it's not the beginning of a preprocessor statement
 			input.unread();
-			return;
+			return false;
 		}
 
 		if (bailout && Character.isWhitespace(input.peek())) {
@@ -234,7 +237,7 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 			// likely in a String
 			input.unread();
 
-			return;
+			return false;
 		}
 
 		boolean escaped = false;
@@ -342,7 +345,11 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 		if (start != input.getOffset()) {
 			// create token
 			tokens.add(factory.produce(ESQFTokentype.PREPROCESSOR, start, input.getOffset()));
+
+			return true;
 		}
+
+		return false;
 	}
 
 	/**
@@ -354,13 +361,13 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 	 *            The InputStream to consume
 	 * @throws IOException
 	 */
-	private void matchString(ICharacterInputStream input) throws IOException {
+	private boolean matchString(ICharacterInputStream input) throws IOException {
 		int start = input.getOffset();
 		int starter = input.read();
 
 		if (starter != '"' && starter != '\'') {
 			input.unread();
-			return;
+			return false;
 		}
 
 		boolean producedSubstring = false;
@@ -419,7 +426,10 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 			// create token
 			tokens.add(factory.produce(producedSubstring ? ESQFTokentype.SUBSTRING_END : ESQFTokentype.STRING, start,
 					input.getOffset()));
+			return true;
 		}
+
+		return false;
 	}
 
 	/**
@@ -429,14 +439,14 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 	 *            The InputStream to consume
 	 * @throws IOException
 	 */
-	private void matchNumberOrIDOrMacro(ICharacterInputStream input) throws IOException {
+	private boolean matchNumberOrIDOrMacro(ICharacterInputStream input) throws IOException {
 		int start = input.getOffset();
 
 		int c = input.read();
 
 		if (!Character.isLetterOrDigit(c) && c != '_' && c != '$' && c != '.') {
 			input.unread();
-			return;
+			return false;
 		}
 
 		// assume number at first
@@ -450,7 +460,7 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 				errorListener.error("Unfinished hex-number specification",
 						factory.produce(ESQFTokentype.ERROR_TOKEN, input.getOffset() - 1, input.getOffset()));
 				input.unread();
-				return;
+				return true;
 			}
 
 			if (c == '.') {
@@ -459,7 +469,7 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 				errorListener.error("Error on '.' - Insert trailing digits to complete Number definition",
 						factory.produce(ESQFTokentype.ERROR_TOKEN, input.getOffset() - 1, input.getOffset()));
 				input.unread();
-				return;
+				return true;
 			}
 
 			type = ESQFTokentype.ID;
@@ -472,6 +482,7 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 		}
 
 		tokens.add(factory.produce(type, start, input.getOffset()));
+		return true;
 	}
 
 	/**
@@ -645,7 +656,7 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 	 *            The InputStream to consume
 	 * @throws IOException
 	 */
-	private void matchOperator(ICharacterInputStream input) throws IOException {
+	private boolean matchOperator(ICharacterInputStream input) throws IOException {
 		int start = input.getOffset();
 
 		int c = input.read();
@@ -714,10 +725,11 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 			break;
 		default:
 			input.unread();
-			return;
+			return false;
 		}
 
 		tokens.add(factory.produce(type, start, input.getOffset()));
+		return true;
 	}
 
 	/**
@@ -727,7 +739,7 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 	 *            The InputStream to consume
 	 * @throws IOException
 	 */
-	private void matchBracket(ICharacterInputStream input) throws IOException {
+	private boolean matchBracket(ICharacterInputStream input) throws IOException {
 		int start = input.getOffset();
 
 		int c = input.read();
@@ -753,7 +765,10 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 			break;
 		default:
 			input.unread();
+			return false;
 		}
+
+		return true;
 	}
 
 	public TokenBuffer<SQFToken> getTokens() {
