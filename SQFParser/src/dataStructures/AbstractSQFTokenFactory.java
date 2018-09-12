@@ -3,7 +3,14 @@ package dataStructures;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AbstractSQFTokenFactory {
+/**
+ * This class is a general implementation of the {@linkplain ITokenFactory}
+ * interface for producing SQF-tokens
+ * 
+ * @author Raven
+ *
+ */
+public abstract class AbstractSQFTokenFactory implements ITokenFactory<SQFToken> {
 
 	/**
 	 * The default entry which is nular
@@ -83,28 +90,20 @@ public abstract class AbstractSQFTokenFactory {
 	}
 
 
-	/**
-	 * Produces a token and sets its precedence and operator type as determined by
-	 * {@link #lookupTable}
-	 * 
-	 * @param type
-	 *            The token type
-	 * @param start
-	 *            The start index of the token (inclusive)
-	 * @param end
-	 *            The end index of the token (exclusive)
-	 * @param buffer
-	 *            The characterBuffer corresponding to this token
-	 * @return The created token
-	 */
-	public SQFToken produce(ESQFTokentype type, int start, int end, ICharacterBuffer buffer) {
+	@Override
+	public SQFToken produce(Object type, int start, int end, ICharacterBuffer buffer) {
+		if (!(type instanceof ESQFTokentype)) {
+			throw new IllegalArgumentException("The token type has to be an ESQFTokenType!");
+		}
+
 		if (!initialized) {
 			initialize();
 		}
-		LookupTableEntry entry = type == ESQFTokentype.MACRO ? null : lookupTable.get(buffer.getText(start, end - start).toLowerCase());
+		LookupTableEntry entry = type == ESQFTokentype.MACRO ? null
+				: lookupTable.get(buffer.getText(start, end - start).toLowerCase());
 
 		if (entry == null) {
-			switch (type) {
+			switch ((ESQFTokentype) type) {
 			case COMMENT:
 			case CURLY_BRACKET_CLOSE:
 			case CURLY_BRACKET_OPEN:
@@ -130,33 +129,15 @@ public abstract class AbstractSQFTokenFactory {
 			}
 		}
 
-		return new SQFToken(type, start, end, entry.getPrecedence(), entry.getOperatorType(), buffer);
+		return new SQFToken((ESQFTokentype) type, start, end, entry.getPrecedence(), entry.getOperatorType(), buffer);
 	}
 
-	/**
-	 * Produces a token and sets its precedence and operator type as determined by
-	 * {@link #lookupTable}. This method assumes that {@link #buffer} has been set
-	 * by using the respective constructor
-	 * 
-	 * @param type
-	 *            The token type
-	 * @param start
-	 *            The start index of the token (inclusive)
-	 * @param end
-	 *            The end index of the token (exclusive)
-	 * @return The created token
-	 */
-	public SQFToken produce(ESQFTokentype type, int start, int end) {
+	@Override
+	public SQFToken produce(Object type, int start, int end) {
 		return produce(type, start, end, buffer);
 	}
 
-	/**
-	 * Sets the {@linkplain ICharacterBuffer} that should be associated with the
-	 * created tokens
-	 * 
-	 * @param buffer
-	 *            The buffer to associate the tokens with
-	 */
+	@Override
 	public void setBuffer(ICharacterBuffer buffer) {
 		this.buffer = buffer;
 	}

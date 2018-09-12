@@ -6,13 +6,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import dataStructures.AbstractSQFTokenFactory;
 import dataStructures.CharacterInputStream;
 import dataStructures.ConsoleErrorListener;
 import dataStructures.ESQFTokentype;
 import dataStructures.ICharacterBuffer;
 import dataStructures.ICharacterInputStream;
 import dataStructures.IErrorListener;
+import dataStructures.ITokenFactory;
 import dataStructures.ITokenSource;
 import dataStructures.SQFToken;
 import dataStructures.TokenBuffer;
@@ -41,7 +41,7 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 	/**
 	 * The token factory to use when creating tokens
 	 */
-	protected AbstractSQFTokenFactory factory;
+	protected ITokenFactory<SQFToken> factory;
 
 	/**
 	 * The set of known macros
@@ -833,9 +833,9 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 	 * when invoking {@link #lex(CharacterInputStream)}.
 	 * 
 	 * @param factory
-	 *            The {@linkplain AbstractSQFTokenFactory} to use
+	 *            The {@linkplain ITokenFactory} to use
 	 */
-	public void setTokenFactory(AbstractSQFTokenFactory factory) {
+	public void setTokenFactory(ITokenFactory<SQFToken> factory) {
 		assert (factory != null);
 
 		this.factory = factory;
