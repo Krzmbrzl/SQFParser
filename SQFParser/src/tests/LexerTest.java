@@ -110,6 +110,20 @@ class LexerTest {
 		assertEquals(ESQFTokentype.PREPROCESSOR, tokenInfo.type(), "Wrong token type!");
 		assertEquals(0, tokenInfo.start(), "Wrong start index");
 		assertEquals(21, tokenInfo.stop(), "Wrong end index");
+		
+		
+		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("# define test\\\r\n 12 #\n".getBytes())));
+
+		tokens = lexer.getTokens();
+
+		assertEquals(1, tokens.size(), "Wrong number of tokens");
+		assertArrayEquals(new Integer[] { 0, 16, 22 }, lexer.getNewlineIndicesAsArray(), "Wrong line indices");
+
+		tokenInfo = tokens.iterator().next();
+
+		assertEquals(ESQFTokentype.PREPROCESSOR, tokenInfo.type(), "Wrong token type!");
+		assertEquals(0, tokenInfo.start(), "Wrong start index");
+		assertEquals(22, tokenInfo.stop(), "Wrong end index");
 
 
 		lexer.lex(new CharacterInputStream(new ByteArrayInputStream("#ifdef test\n\t 12\n\n #endif".getBytes())));

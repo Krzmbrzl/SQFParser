@@ -253,6 +253,12 @@ public class SQFLexer implements ITokenSource<SQFToken> {
 		// read until unescaped newline
 		c = input.read();
 		while ((c != '\n' || escaped || isIf) && c != -1) {
+			if(c=='\r') {
+				// ignore carriage returns
+				c= input.read();
+				continue;
+			}
+			
 			if (c == '\\') {
 				escaped = true;
 			} else {
